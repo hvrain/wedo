@@ -1,27 +1,28 @@
 import { cookies } from "next/headers";
+import { type NextRequest } from "next/server";
 
 import {
   apiAuthPrefix,
   authRoutes,
   DEFAULT_LOGIN_REDIRECT,
   publicRoutes,
+  resetPasswordRoutes,
 } from "./routes";
 
-import type { NextRequest } from "next/server";
-
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export function middleware(req: NextRequest) {
   const cookieStore = cookies();
   const accessToken = cookieStore.get("accessToken");
-  const { nextUrl } = request;
+  const { nextUrl } = req;
   const { pathname } = nextUrl;
 
   const isLoggedIn = accessToken?.value;
   const isApiAuth = pathname.startsWith(apiAuthPrefix);
+  const isPasswordResetPath = pathname.startsWith(resetPasswordRoutes);
   const isPublicPath = publicRoutes.includes(pathname);
   const isAuthPath = authRoutes.includes(pathname);
 
-  if (isApiAuth) return null;
+  if (isApiAuth || isPasswordResetPath) return null;
   if (isAuthPath) {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));

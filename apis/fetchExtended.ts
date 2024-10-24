@@ -2,19 +2,19 @@ import { getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import returnFetch, { FetchArgs } from "return-fetch";
 
-import { getServerCookie, setServerCookie } from "@/lib/cookie";
+import { getServerCookie } from "@/lib/cookie";
 
 import { postRefreshAccessToken } from "./auth";
 
 export async function refreshAccessToken() {
   let refreshToken;
-  if (typeof window !== "undefined")
+  if (typeof window === "undefined") {
     refreshToken = await getServerCookie("refreshToken");
-  else refreshToken = getCookie("refreshToken");
-
+  } else {
+    refreshToken = getCookie("refreshToken");
+  }
   try {
     const { accessToken } = await postRefreshAccessToken(refreshToken!);
-    setServerCookie("accessToken", accessToken);
     return accessToken;
   } catch (error) {
     return {
@@ -40,15 +40,14 @@ const fetchExtended = returnFetch({
       if (!args[1]?.headers) return args;
 
       let accessToken;
-      if (typeof window === "undefined")
+      if (typeof window === "undefined") {
         accessToken = await getServerCookie("accessToken");
-      else accessToken = getCookie("accessToken");
+      } else accessToken = getCookie("accessToken");
 
       if (!accessToken) return args;
 
       const timeRemaining =
         jwtDecode(accessToken).exp! - Math.floor(new Date().getTime() / 1000);
-
       if (timeRemaining <= 0) {
         accessToken = await refreshAccessToken();
       }
