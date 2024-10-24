@@ -44,6 +44,7 @@
     "react": "^18.3.1",
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",
+    "react-intersection-observer": "^9.13.1",
     "return-fetch": "^0.4.6",
     "svgr": "^1.10.0",
     "tailwind-merge": "^2.5.3",
