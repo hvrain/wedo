@@ -5,16 +5,23 @@ import {
 } from "@/dtos/AuthDtos";
 
 const AUTH_BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/8-7`;
+const options = {
+  credentials: "include",
+};
 
 export async function postRefreshAccessToken(refreshToken: string) {
-  const res = await fetch(`${AUTH_BASE_URL}/auth/refresh-token`, {
-    method: "POST",
-    body: JSON.stringify({ refreshToken }),
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_DEPLOY_URL}/api/auth/refresh-token`,
+    {
+      method: "POST",
+      body: JSON.stringify({ refreshToken }),
+      headers: {
+        "Content-Type": "application/json",
+        ...options,
+      },
+      next: { revalidate: 0 },
     },
-    next: { revalidate: 0 },
-  });
+  );
   const json: { accessToken: string } = await res.json();
   return json;
 }
