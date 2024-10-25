@@ -67,3 +67,34 @@ export async function deleteUser() {
   }
   await deleteToken();
 }
+
+export async function postSendResetPasswordEmail({ email }: { email: string }) {
+  const res = await fetchExtended("/user/send-reset-password-email", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      redirectUrl: process.env.NEXT_PUBLIC_DEPLOY_URL,
+    }),
+  });
+  if (!res.ok) {
+    const json: { message: string } = await res.json();
+    throw new Error(json.message);
+  }
+  const json: { message: string } = await res.json();
+  return json;
+}
+
+export async function patchUserResetPassword(
+  body: PatchUserPasswordRequestBody & { token: string },
+) {
+  const res = await fetchExtended("/user/reset-password", {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const json: { message: string } = await res.json();
+    throw new Error(json.message);
+  }
+  const json: { message: string } = await res.json();
+  return json;
+}
