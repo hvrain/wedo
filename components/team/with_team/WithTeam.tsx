@@ -18,7 +18,7 @@ export default function WithTeam({ isAdmin, groupId }: WithTeamProps) {
         <div className="mb-12 mt-6 pc:mb-8 pc:mt-8">
           <TeamTodoList isAdmin={isAdmin} groupId={groupId} />
         </div>
-        {isAdmin && <TeamReport />}
+        {isAdmin && <TeamReport groupId={groupId} />}
         <div className="mt-12 pc:mt-8">
           <TeamMemberList isAdmin={isAdmin} groupId={groupId} />
         </div>
