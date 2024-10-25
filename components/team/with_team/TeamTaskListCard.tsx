@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import ActionsDropDown from "@/@common/dropdown/ActionsDropDown";
 import { TaskList } from "@/dtos/TaskLists";
 import useToggle from "@/hooks/useToggle";
@@ -45,7 +47,12 @@ export default function TeamTaskListCard({
         style={taskListColorStylePicker(taskList.id)}
       />
       <div className="md-medium flex h-10 w-full min-w-0 items-center justify-between rounded-r-[10px] bg-dropDown-default pl-3 pr-2 text-default-light">
-        <p className="truncate pr-2">{taskList.name}</p>
+        <Link
+          href={`/${groupId}/tasks/${taskList.id}`}
+          className="flex h-full flex-1 items-center truncate pr-2"
+        >
+          {taskList.name}
+        </Link>
         <div className="flex shrink-0 items-center">
           <div className="flex h-[25px] items-center justify-between gap-1 rounded-full bg-brand-secondary-light px-2 py-1">
             {isCompletedTaskList ? <ProgressComplete /> : <ProgressCircle />}
