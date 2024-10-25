@@ -1,13 +1,48 @@
+"use client";
+
 import Image from "next/image";
 
-export default function TeamReport() {
+import { useGetTeam } from "@/queries/group";
+import { countTaskList } from "@/utils/countDoneTask";
+
+interface TeamTodoReportBoxProps {
+  title: string;
+  count: number;
+  imgSrc: string;
+}
+
+function TeamTodoReportBox({ title, count, imgSrc }: TeamTodoReportBoxProps) {
+  return (
+    <div className="flex w-[142px] items-center justify-between rounded-xl bg-brand-secondary-light px-4 py-4 tab:w-[280px] pc:w-[400px]">
+      <div>
+        <div className="xs-medium mb-1 text-default-light tab:md-medium">
+          {title}
+        </div>
+        <div className="2xl-bold text-default-light">{count}개</div>
+      </div>
+      <Image width={44} height={44} src={imgSrc} alt={title} />
+    </div>
+  );
+}
+
+interface TeamReportProps {
+  groupId: number;
+}
+
+export default function TeamReport({ groupId }: TeamReportProps) {
+  const { data } = useGetTeam(groupId);
+
+  const taskLists = data?.taskLists || [];
+  const { totalDoneTasks: doneTasksCount, totalTasks: tasksCount } =
+    countTaskList(taskLists);
+
   return (
     <>
       <h2 className="mb-4 text-[18px]/[19px] font-semibold text-default-light">
         리포트
       </h2>
       <div className="flex h-[224px] items-center justify-between rounded-[20px] bg-dropDown-default px-6 py-4">
-        <div className="flex gap-11">
+        <div className="flex items-center justify-center gap-11">
           <div>리포트 그래프</div>
           <div>
             <div className="md-medium text-default-light">
@@ -19,34 +54,16 @@ export default function TeamReport() {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex w-[142px] items-center justify-between rounded-xl bg-brand-secondary-light px-4 py-4 tab:w-[280px] pc:w-[400px]">
-            <div>
-              <div className="xs-medium mb-1 text-default-light tab:md-medium">
-                오늘의 할 일
-              </div>
-              <div className="2xl-bold text-default-light">20개</div>
-            </div>
-            <Image
-              width={44}
-              height={44}
-              src="/images/team_page_default_user_pfp.png"
-              alt="오늘의 할 일"
-            />
-          </div>
-          <div className="flex w-[142px] items-center justify-between rounded-xl bg-brand-secondary-light px-4 py-4 tab:w-[280px] pc:w-[400px]">
-            <div>
-              <div className="xs-medium mb-1 text-default-light tab:md-medium">
-                한 일
-              </div>
-              <div className="2xl-bold text-default-light">5개</div>
-            </div>
-            <Image
-              width={44}
-              height={44}
-              src="/images/team_page_done.png"
-              alt="한 일"
-            />
-          </div>
+          <TeamTodoReportBox
+            title="오늘의 할 일"
+            count={tasksCount}
+            imgSrc="/images/team_page_default_user_pfp.png"
+          />
+          <TeamTodoReportBox
+            title="한 일"
+            count={doneTasksCount}
+            imgSrc="/images/team_page_done.png"
+          />
         </div>
       </div>
     </>
