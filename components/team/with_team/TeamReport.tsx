@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useGetTeam } from "@/queries/group";
 import { countTaskList } from "@/utils/countDoneTask";
 
+import TodoReportChartSide from "./TodoReportChartSide";
+
 interface TeamTodoReportBoxProps {
   title: string;
   count: number;
@@ -43,15 +45,10 @@ export default function TeamReport({ groupId }: TeamReportProps) {
       </h2>
       <div className="flex h-[224px] items-center justify-between rounded-[20px] bg-dropDown-default px-6 py-4">
         <div className="flex items-center justify-center gap-11">
-          <div>리포트 그래프</div>
-          <div>
-            <div className="md-medium text-default-light">
-              오늘의
-              <br />
-              진행 상황
-            </div>
-            <div className="4xl-bold text-brand-active">25%</div>
-          </div>
+          <TodoReportChartSide
+            tasksCount={tasksCount}
+            doneTasksCount={doneTasksCount}
+          />
         </div>
         <div className="flex flex-col gap-4">
           <TeamTodoReportBox
