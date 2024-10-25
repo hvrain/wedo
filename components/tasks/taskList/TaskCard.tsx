@@ -1,39 +1,41 @@
 import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
-import { TasksResponse } from "@/dtos/TaskDtos";
+import { getFrequencyType } from "@/constants/frequencyType";
+import { TasksType } from "@/dtos/TaskDtos";
 import { formatToKorDate } from "@/utils/convertDate";
 
 interface TaskListProps {
-  task: TasksResponse;
+  task: TasksType;
 }
 
-function getFrequencyType(frequency: string): string {
-  switch (frequency) {
-    case "ONCE":
-      return "반복 없음";
-    case "DAILY":
-      return "매일 반복";
-    case "WEEKLY":
-      return "주 반복";
-    case "MONTHLY":
-      return "일 반복";
-    default:
-      return frequency;
-  }
-}
-
-export default function TaskList({ task }: TaskListProps) {
+export default function TaskCard({ task }: TaskListProps) {
+  const { teamid, tasklistid } = useParams();
   return (
     <article className="flex w-full flex-col gap-2.5 rounded-xl bg-dropDown-default px-3.5 py-3">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <Image
-            width={24}
-            height={24}
-            src="/images/checkbox.png"
-            alt="체크박스"
-          />
-          <h2 className="text-md">{task.name}</h2>
+          {task.doneAt ? (
+            <Image
+              width={24}
+              height={24}
+              src="/images/checkbox_on.png"
+              alt="체크박스"
+            />
+          ) : (
+            <Image
+              width={24}
+              height={24}
+              src="/images/checkbox.png"
+              alt="체크박스"
+            />
+          )}
+          <Link href={`/${teamid}/tasks/${tasklistid}/task/${task.id}`}>
+            <h2 className={`text-md ${task.doneAt && "line-through"}`}>
+              {task.name}
+            </h2>
+          </Link>
         </div>
         <div className="flex items-center gap-0.5">
           <Image
