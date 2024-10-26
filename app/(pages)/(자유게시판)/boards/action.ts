@@ -13,7 +13,7 @@ export async function getArticle({
   const req = new URLSearchParams(search).toString();
 
   const res = await fetch(
-    `https://fe-project-cowokers.vercel.app/8-777/articles?page=${page}&pageSize=20&${req}`,
+    `https://fe-project-cowokers.vercel.app/8-7/articles?page=${page}&pageSize=20&${req}`,
   );
   const data = await res.json();
 
@@ -40,7 +40,7 @@ export async function searchArticle(prev: any, formData: FormData) {
   const req = new URLSearchParams(param).toString();
 
   const res = await fetch(
-    `https://fe-project-cowokers.vercel.app/8-777/articles?page=1&pageSize=20&${req}`,
+    `https://fe-project-cowokers.vercel.app/8-7/articles?page=1&pageSize=20&${req}`,
   );
 
   const data = await res.json();
