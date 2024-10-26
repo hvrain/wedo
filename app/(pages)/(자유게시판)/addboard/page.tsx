@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import Container from "@/@common/container/Container";
 import { postArticle } from "@/apis/article";
 import { uploadImage } from "@/apis/image";
 import { Button } from "@/components/@common/Button";
@@ -34,7 +35,7 @@ export default function AddBoard() {
   }
 
   return (
-    <main className="mx-auto mt-[60px] max-w-[1248px] px-4 pb-8 pt-10 tab:px-6 tab:pt-14">
+    <Container background="white" className="pb-8 pt-10 tab:pt-14">
       <form action={addArticle} className="relative flex flex-col gap-y-10">
         <fieldset className="flex flex-col gap-y-6 tab:gap-y-8 pc:gap-y-10">
           <legend className="2lg-medium flex h-8 items-center tab:xl-bold tab:h-12">
@@ -87,6 +88,6 @@ export default function AddBoard() {
           등록
         </Button>
       </form>
-    </main>
+    </Container>
   );
 }
