@@ -32,6 +32,21 @@ export interface TasksType {
   name: string;
   id: number;
 }
+
+export interface DoneTaskType {
+  displayIndex: number;
+  commentCount: number;
+  deletedAt: Date | null;
+  recurringId: number;
+  frequency: string;
+  updatedAt: Date;
+  doneAt: Date;
+  date: Date;
+  description: string;
+  name: string;
+  id: number;
+}
+
 export interface Recurring {
   createdAt: string;
   description: string;

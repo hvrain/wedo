@@ -68,6 +68,18 @@ export async function deleteUser() {
   await deleteToken();
 }
 
+export async function userHistory() {
+  const res = await fetchExtended("/user/history");
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+}
+
 export async function postSendResetPasswordEmail({ email }: { email: string }) {
   const res = await fetchExtended("/user/send-reset-password-email", {
     method: "POST",
