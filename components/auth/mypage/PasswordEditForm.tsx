@@ -56,6 +56,7 @@ export default function PasswordEditForm({
       password: "",
       passwordConfirmation: "",
     },
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -79,6 +80,7 @@ export default function PasswordEditForm({
             label="새 비밀번호"
             name="password"
             type="password"
+            hasVisibleTrigger
             placeholder="새 비밀번호를 입력해주세요"
             control={form.control}
           />
@@ -87,6 +89,7 @@ export default function PasswordEditForm({
             label="새 비밀번호 확인"
             name="passwordConfirmation"
             type="password"
+            hasVisibleTrigger
             placeholder="새 비밀번호를 다시 한번 입력해주세요"
             control={form.control}
           />

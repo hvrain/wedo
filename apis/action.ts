@@ -7,7 +7,13 @@ import { PatchUserRequestBody } from "@/dtos/UserDtos";
 
 import { postSignIn, postSignUp } from "./auth";
 import { uploadImage } from "./image";
-import { getUser, patchUser, patchUserPassword } from "./user";
+import {
+  getUser,
+  patchUser,
+  patchUserPassword,
+  patchUserResetPassword,
+  postSendResetPasswordEmail,
+} from "./user";
 
 export type State = {
   status: string;
@@ -92,7 +98,41 @@ export async function actionEditPassword(prevState: State, formData: FormData) {
   } catch (err) {
     if (err instanceof Error)
       return { status: "API_ERROR", message: err.message };
-    throw new Error("profile edit unknown error");
+    throw new Error("actionEditPassword unknown error");
+  }
+  return { status: "SUCCESS" };
+}
+
+export async function actionSendResetPasswordEmail(
+  prevState: State,
+  formData: FormData,
+) {
+  try {
+    const email = formData.get("email") as string;
+    await postSendResetPasswordEmail({
+      email,
+    });
+  } catch (err) {
+    if (err instanceof Error)
+      return { status: "API_ERROR", message: err.message };
+    throw new Error("actionSendResetPasswordEmail unknown error");
+  }
+  return { status: "SUCCESS" };
+}
+
+export async function actionResetPasswordWithToken(
+  prevState: State,
+  formData: FormData,
+) {
+  try {
+    const password = formData.get("password") as string;
+    const passwordConfirmation = formData.get("passwordConfirmation") as string;
+    const token = formData.get("token") as string;
+    await patchUserResetPassword({ password, passwordConfirmation, token });
+  } catch (err) {
+    if (err instanceof Error)
+      return { status: "API_ERROR", message: err.message };
+    throw new Error("actionEditPassword unknown error");
   }
   return { status: "SUCCESS" };
 }

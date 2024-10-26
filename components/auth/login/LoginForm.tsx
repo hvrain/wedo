@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/tabindex-no-positive */
+
 "use client";
 
 import { useFormState } from "react-dom";
@@ -11,6 +13,9 @@ import z from "zod";
 import { Button } from "@/@common/Button";
 import { actionSignIn, State } from "@/apis/action";
 import FormProviderField from "@/components/auth/InputField";
+import useToggle from "@/hooks/useToggle";
+
+import ResetPasswordEmailModal from "./ResetPasswordEmailModal";
 
 const INITIAL_LOGIN_STATE: State = {
   status: "NOT_YET",
@@ -28,6 +33,7 @@ export const loginSchema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
+  const [open, toggleOpen] = useToggle(false);
   const [state, formAction] = useFormState(actionSignIn, INITIAL_LOGIN_STATE);
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -35,56 +41,64 @@ export default function LoginForm() {
       email: "",
       password: "",
     },
-    mode: "onBlur",
+    mode: "onChange",
   });
   if (state.status === "SUCCESS") router.push("/");
 
   return (
-    <FormProvider {...form}>
-      <form action={formAction} className="flex w-full flex-col">
-        <div className="mt-6 flex flex-col gap-6 tab:mt-[52px] pc:mt-20">
-          <FormProviderField
-            label="이메일"
-            name="email"
-            type="email"
-            placeholder="이메일을 입력해주세요"
-            control={form.control}
-          />
-          <FormProviderField
-            label="비밀번호"
-            name="password"
-            type="password"
-            placeholder="비밀번호를 입력해주세요"
-            hasVisibleTrigger
-            control={form.control}
-          />
+    <>
+      <FormProvider {...form}>
+        <form action={formAction} className="flex w-full flex-col">
+          <div className="mt-6 flex flex-col gap-6 tab:mt-[52px] pc:mt-20">
+            <FormProviderField
+              autoFocus
+              tabIndex={1}
+              label="이메일"
+              name="email"
+              type="email"
+              placeholder="이메일을 입력해주세요"
+              control={form.control}
+            />
+            <FormProviderField
+              tabIndex={2}
+              label="비밀번호"
+              name="password"
+              type="password"
+              placeholder="비밀번호를 입력해주세요"
+              hasVisibleTrigger
+              control={form.control}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={toggleOpen}
+            className="mt-2 self-end text-link-light underline underline-offset-1"
+          >
+            비밀번호를 잊으셨나요?
+          </button>
+          {state.status === "API_ERROR" && (
+            <p className="md-medium mt-4 text-danger">{state.message}</p>
+          )}
+          <Button
+            tabIndex={3}
+            className="mt-10 focus:border focus:border-gray-500"
+            disabled={!form.formState.isValid}
+            type="submit"
+          >
+            로그인
+          </Button>
+        </form>
+        <div className="mt-4 space-x-2">
+          <span>아직 계정이 없으신가요?</span>
+          <Link
+            href="/signup"
+            className="self-end text-link-light underline underline-offset-1"
+          >
+            가입하기
+          </Link>
         </div>
-        <Link
-          href="/"
-          className="mt-2 self-end text-link-light underline underline-offset-1"
-        >
-          비밀번호를 잊으셨나요?
-        </Link>
-        {state.status === "API_ERROR" && (
-          <p className="md-medium mt-4 text-danger">{state.message}</p>
-        )}
-        <Button
-          className="mt-10"
-          disabled={!form.formState.isValid}
-          type="submit"
-        >
-          로그인
-        </Button>
-      </form>
-      <div className="mt-4 space-x-2">
-        <span>아직 계정이 없으신가요?</span>
-        <Link
-          href="/signup"
-          className="self-end text-link-light underline underline-offset-1"
-        >
-          가입하기
-        </Link>
-      </div>
-    </FormProvider>
+      </FormProvider>
+      <ResetPasswordEmailModal isOpen={open} toggleOpen={toggleOpen} />
+    </>
   );
 }
