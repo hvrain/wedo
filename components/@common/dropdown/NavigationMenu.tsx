@@ -48,13 +48,20 @@ function useTriggerFix() {
   return React.useMemo(() => {
     let disable: NodeJS.Timeout | boolean;
     return {
-      onClick: (e: React.MouseEvent<HTMLButtonElement>) =>
-        disable && e.preventDefault(),
+      onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (disable) {
+          e.preventDefault();
+        }
+      },
       onPointerEnter: () => {
         clearTimeout(disable as NodeJS.Timeout);
         disable = setTimeout(() => {
           disable = false;
         }, 1000);
+      },
+      onPointerLeave: () => {
+        clearTimeout(disable as NodeJS.Timeout);
+        disable = false;
       },
     };
   }, []);
