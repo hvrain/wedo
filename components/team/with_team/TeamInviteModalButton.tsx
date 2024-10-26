@@ -67,7 +67,7 @@ export default function TeamInviteModalButton({
     (() => toast({ title: "초대 링크를 복사하였습니다." }))();
 
     navigator.clipboard.writeText(
-      `${process.env.NEXT_PUBLIC_DEPLOY_URL}/jointeam?${inviteToken}`,
+      `${process.env.NEXT_PUBLIC_DEPLOY_URL}/jointeam?invite=${inviteToken}`,
     );
   };
 
