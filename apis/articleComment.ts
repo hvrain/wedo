@@ -1,4 +1,4 @@
-import { fetchExtendedForm } from "@/apis/fetchExtended";
+import fetchExtended from "@/apis/fetchExtended";
 
 export async function postArticleComment(
   articleId: number,
@@ -16,12 +16,21 @@ export async function postArticleComment(
     image: string | null;
   };
 }> {
-  const res = await fetchExtendedForm(`/articles/${articleId}/comments`, {
+  const res = await fetchExtended(`/articles/${articleId}/comments`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(param),
+  });
+
+  const data = await res.json();
+
+  return data;
+}
+
+export async function deleteComment(
+  commentId: number,
+): Promise<{ id: number }> {
+  const res = await fetchExtended(`/comments/${commentId}`, {
+    method: "DELETE",
   });
 
   const data = await res.json();
