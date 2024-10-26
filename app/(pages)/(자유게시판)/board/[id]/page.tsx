@@ -1,33 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 
+import Container from "@/@common/container/Container";
 import { postArticleComment } from "@/apis/articleComment";
+import { getUser } from "@/apis/user";
 import { Button } from "@/components/@common/Button";
 import Textarea from "@/components/@common/Textarea";
-import defaultProfile from "@/public/images/default_profile.png";
-import Comment from "@/public/svg/comment.svg";
-import Like from "@/public/svg/like.svg";
+import CountContent from "@/components/content/Count";
+import UserProfile from "@/components/user/Profile";
+import { formatToDotDate } from "@/utils/convertDate";
+
+import PatchAndDelete from "./PatchAndDelete";
 
 export default async function Board({ params }: { params: { id: number } }) {
-  const getArticledDetail = await fetch(
-    `https://fe-project-cowokers.vercel.app/8-7/articles/${params.id}`,
-  );
-  const article = await getArticledDetail.json();
+  const article = await (
+    await fetch(
+      `https://fe-project-cowokers.vercel.app/8-7/articles/${params.id}`,
+    )
+  ).json();
 
-  const getArticleComment = await fetch(
-    `https://fe-project-cowokers.vercel.app/8-7/articles/${params.id}/comments?limit=5`,
-  );
-  const Comments = await getArticleComment.json();
-  // console.log({ Comment: Comments });
-  // console.log({ Comment: Comments.list });
+  const Comments = await (
+    await fetch(
+      `https://fe-project-cowokers.vercel.app/8-7/articles/${params.id}/comments?limit=20`,
+    )
+  ).json();
+
+  const user = await getUser();
 
   async function addArticleComment(formData: FormData) {
     "use server";
-
-    // console.log(formData);
-    // formData.set("content", "");
-    // console.log(formData);
 
     const req = {
       content: formData.get("content") as string,
@@ -39,58 +42,48 @@ export default async function Board({ params }: { params: { id: number } }) {
   }
 
   return (
-    <main className="mx-auto mt-[60px] flex max-w-[1248px] flex-col gap-y-20 px-4 pb-8 pt-10 tab:px-6 tab:pt-14">
+    <Container
+      background="white"
+      className="flex flex-col gap-y-20 pb-8 pt-10 tab:pt-14"
+    >
       <article className="flex flex-col gap-y-6">
         <div className="flex flex-col gap-y-4 py-6">
-          <header className="flex min-h-6 items-center justify-between">
+          <header className="min-h-6">
+            {article.writer.id === user.id && (
+              <div className="float-end">
+                <PatchAndDelete
+                  id={{ articleId: article.id, commentId: null }}
+                  section="article"
+                />
+              </div>
+            )}
+
             <h1 className="lg-medium text-default-light tab:2lg-medium">
               {article.title}
             </h1>
-
-            {/* 유저 정보가 맞으면 버거 버튼 띄우기 */}
           </header>
 
           <hr />
 
           <footer className="flex justify-between">
-            <div className="flex items-center gap-x-4">
-              <address className="xs-medium flex items-center justify-between gap-x-3 text-default-light tab:md-medium">
-                {/* 유저 프로필 정보가 없음 물어보기 */}
-                <Image
-                  alt="프로필 이미지"
-                  width={32}
-                  height={32}
-                  src={defaultProfile}
-                />
-
-                {article.writer.nickname}
-              </address>
+            <section className="flex items-center gap-x-4">
+              <UserProfile
+                profileImage={null}
+                nickname={article.writer.nickname}
+              />
 
               <hr className="h-4 w-px border-0 bg-slate-700" />
 
               <time className="xs-medium text-secondary-light tab:md-medium">
-                {article.createdAt}
+                {formatToDotDate(article.createdAt)}
               </time>
-              {/* 변환해주는 코드 추가하기 */}
-            </div>
-
-            <section className="flex gap-x-4">
-              <figure className="flex items-center">
-                <Comment />
-
-                <figcaption className="xs-normal text-slate-400 tab:md-normal">
-                  {article.commentCount}
-                </figcaption>
-              </figure>
-
-              <figure className="flex items-center">
-                <Like />
-
-                <figcaption className="xs-normal text-slate-400 tab:md-normal">
-                  {article.likeCount}
-                </figcaption>
-              </figure>
             </section>
+
+            <div className="flex gap-x-4">
+              <CountContent content="comment" count={article.commentCount} />
+
+              <CountContent content="like" count={article.likeCount} />
+            </div>
           </footer>
         </div>
 
@@ -121,7 +114,6 @@ export default async function Board({ params }: { params: { id: number } }) {
               BoxSize="md"
               placeholder="댓글을 입력해주세요."
               required
-              autoFocus
             />
           </label>
 
@@ -140,28 +132,31 @@ export default async function Board({ params }: { params: { id: number } }) {
           {Comments.list.map((comment: any) => (
             <li key={comment.id}>
               <article className="flex w-full flex-col gap-y-8 rounded-xl bg-primary-light p-4 tab:px-6 tab:py-5">
-                <p className="[overflowWrap:anywhere]">{comment.content}</p>
+                <div>
+                  {comment.writer.id === user.id && (
+                    <div className="float-end">
+                      <PatchAndDelete
+                        id={{ articleId: article.id, commentId: comment.id }}
+                        section="comment"
+                      />
+                    </div>
+                  )}
 
-                {/* 유저 정보가 맞으면 버거 버튼 띄우기 */}
+                  <p>{comment.content}</p>
+                </div>
+
                 <footer className="flex justify-between">
                   <div className="flex items-center gap-x-4">
-                    <address className="xs-medium flex items-center justify-between gap-x-3 text-default-light tab:md-medium">
-                      <Image
-                        alt="프로필 이미지"
-                        width={32}
-                        height={32}
-                        src={defaultProfile}
-                      />
-
-                      {article.writer.nickname}
-                    </address>
+                    <UserProfile
+                      profileImage={comment.writer.image}
+                      nickname={comment.writer.nickname}
+                    />
 
                     <hr className="h-4 w-px border-0 bg-slate-700" />
 
                     <time className="xs-medium text-secondary-light tab:md-medium">
-                      {article.createdAt}
+                      {formatToDotDate(comment.createdAt)}
                     </time>
-                    {/* 변환해주는 코드 추가하기 */}
                   </div>
 
                   {/* api로 안 보내줌 물어보기 */}
@@ -180,6 +175,6 @@ export default async function Board({ params }: { params: { id: number } }) {
           ))}
         </ol>
       </section>
-    </main>
+    </Container>
   );
 }
