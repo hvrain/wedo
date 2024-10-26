@@ -1,4 +1,4 @@
-import { fetchExtendedForm } from "@/apis/fetchExtended";
+import fetchExtended from "@/apis/fetchExtended";
 
 export async function postArticle(param: {
   title: string;
@@ -13,12 +13,21 @@ export async function postArticle(param: {
   writer: { id: number; nickname: string };
   likeCount: number;
 }> {
-  const res = await fetchExtendedForm("/articles", {
+  const res = await fetchExtended("/articles", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(param),
+  });
+
+  const data = await res.json();
+
+  return data;
+}
+
+export async function deleteArticle(
+  articleId: number,
+): Promise<{ id: number }> {
+  const res = await fetchExtended(`/articles/${articleId}`, {
+    method: "DELETE",
   });
 
   const data = await res.json();
