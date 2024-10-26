@@ -55,6 +55,7 @@ export function InputField<T extends FieldValues>({
         </FormControl>
         {hasVisibleTrigger && (
           <button
+            tabIndex={-1}
             type="button"
             className="absolute right-[20px] top-[35px]"
             onClick={() => setIsVisible((p) => !p)}
@@ -92,10 +93,11 @@ export default function FormProviderField<T extends FieldValues>({
   hasVisibleTrigger = false,
   ...props
 }: InputFieldProps & UseControllerProps<T>) {
+  const { control, name, ...otherProps } = props;
   return (
     <FormField
-      control={props.control}
-      name={props.name}
+      control={control}
+      name={name}
       render={({ field: { ref, ...rest } }) => (
         <InputField
           label={label}
@@ -104,6 +106,7 @@ export default function FormProviderField<T extends FieldValues>({
           disabled={disabled}
           className={className}
           hasVisibleTrigger={hasVisibleTrigger}
+          {...otherProps}
           {...rest}
         />
       )}

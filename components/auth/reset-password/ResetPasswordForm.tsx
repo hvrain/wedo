@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -11,20 +12,12 @@ import { useRouter } from "next/navigation";
 import z from "zod";
 
 import { Button } from "@/@common/Button";
-import { actionSignUp, State } from "@/apis/action";
+import { actionResetPasswordWithToken, State } from "@/apis/action";
 import FormProviderField from "@/components/auth/InputField";
+import { toast } from "@/hooks/useToast";
 
-const INITIAL_LOGIN_STATE: State = {
-  status: "NOT_YET",
-};
-
-export const loginSchema = z
+const schema = z
   .object({
-    email: z.string().email({ message: "이메일 형식이 올바르지 않습니다." }),
-    nickname: z
-      .string()
-      .min(1, { message: "닉네입을 입력해주세요" })
-      .max(30, { message: "닉네임을 30자 이하로 입력해주세요" }),
     password: z
       .string()
       .min(8, { message: "비밀번호를 8글자 이상 입력해주세요" })
@@ -45,75 +38,76 @@ export const loginSchema = z
     }
   });
 
-export default function SignUpForm() {
+const INITIAL_STATE: State = {
+  status: "NOT_YET",
+};
+
+export default function ResetPasswordForm({ token }: { token: string }) {
   const router = useRouter();
-  const [state, formAction] = useFormState(actionSignUp, INITIAL_LOGIN_STATE);
+  const [state, formAction] = useFormState(
+    actionResetPasswordWithToken,
+    INITIAL_STATE,
+  );
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
-      nickname: "",
       password: "",
       passwordConfirmation: "",
+      token,
     },
     mode: "onChange",
   });
-  if (state.status === "SUCCESS") router.push("/");
+  useEffect(() => {
+    if (state.status === "SUCCESS") {
+      toast({ title: "비밀번호를 변경하였습니다.", variant: "default" });
+      router.push("login");
+    } else if (state.status === "API_ERROR")
+      toast({ title: state.message, variant: "danger" });
+  }, [state, router]);
 
   return (
     <FormProvider {...form}>
       <form action={formAction} className="flex w-full flex-col">
         <div className="mt-6 flex flex-col gap-6 tab:mt-[52px] pc:mt-20">
           <FormProviderField
-            autoFocus
-            tabIndex={1}
-            label="이메일"
-            name="email"
-            type="email"
-            placeholder="이메일을 입력해주세요"
-            control={form.control}
-          />
-          <FormProviderField
-            tabIndex={2}
-            label="닉네임"
-            name="nickname"
-            type="text"
-            placeholder="닉네임을 입력해주세요"
-            control={form.control}
-          />
-          <FormProviderField
-            tabIndex={3}
-            label="비밀번호"
+            className="bg-input-default"
+            label="새 비밀번호"
             name="password"
             type="password"
-            placeholder="비밀번호를 입력해주세요"
             hasVisibleTrigger
+            placeholder="새 비밀번호를 입력해주세요"
             control={form.control}
           />
           <FormProviderField
-            tabIndex={4}
-            label="비밀번호 확인"
+            className="bg-input-default"
+            label="새 비밀번호 확인"
             name="passwordConfirmation"
             type="password"
-            placeholder="비밀번호를 다시 한번 입력해주세요"
             hasVisibleTrigger
+            placeholder="새 비밀번호를 다시 한번 입력해주세요"
             control={form.control}
           />
+          <input
+            className="hidden"
+            tabIndex={-1}
+            name="token"
+            defaultValue={token}
+          />
+          {state.status === "API_ERROR" && (
+            <p className="md-medium mt-4 text-danger">{state.message}</p>
+          )}
+          <Button
+            tabIndex={5}
+            className="mt-10"
+            disabled={!form.formState.isValid}
+            type="submit"
+          >
+            비밀번호 변경
+          </Button>
         </div>
-        {state.status === "API_ERROR" && (
-          <p className="md-medium mt-4 text-danger">{state.message}</p>
-        )}
-        <Button
-          tabIndex={5}
-          className="mt-10"
-          disabled={!form.formState.isValid}
-          type="submit"
-        >
-          회원가입
-        </Button>
       </form>
       <div className="mt-4 space-x-2">
-        <span>이미 회원이신가요?</span>
+        <span>비밀번호를 변경하지 않으시겠어요?</span>
         <Link
           href="/login"
           className="self-end text-link-light underline underline-offset-1"
