@@ -7,7 +7,7 @@ export interface AddTaskRequest {
   weekDays?: number[];
 }
 
-export interface TasksResponse {
+export interface TasksType {
   doneBy?: {
     user?: {
       image: string;
@@ -32,5 +32,36 @@ export interface TasksResponse {
   name: string;
   id: number;
 }
+export interface Recurring {
+  createdAt: string;
+  description: string;
+  frequencyType: string;
+  groupId: number;
+  id: number;
+  monthDay: number | null;
+  name: string;
+  startDate: string;
+  taskListId: number;
+  updatedAt: string;
+}
 
-export type TasksResponseArray = TasksResponse[];
+export type TasksDetailType = TasksType & { recurring: Recurring };
+
+export interface TaskUpdateDto {
+  name: string;
+  description: string;
+  done?: boolean;
+}
+
+export interface TaskCommentType {
+  content: string;
+  updateAt: string;
+  createdAt: Date;
+  id: number;
+  taskId: string;
+  user: {
+    image: string;
+    nickname: string;
+    id: number;
+  };
+}

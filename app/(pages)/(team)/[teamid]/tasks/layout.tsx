@@ -13,9 +13,7 @@ interface TasksProps {
 
 export default async function TasksLayout({ children, params }: TasksProps) {
   const { teamid } = params;
-  const res = await fetchExtended(`/groups/${teamid}`, {
-    cache: "no-store",
-  });
+  const res = await fetchExtended(`/groups/${teamid}`);
   const data = await res.json();
   const taskList = data.taskLists;
 
@@ -25,7 +23,7 @@ export default async function TasksLayout({ children, params }: TasksProps) {
         <h2 className="mb-6 text-xl font-bold">할 일 리스트</h2>
         <TasksDate />
         <TasksMenu taskMenu={taskList} />
-        <div>{children}</div>
+        {children}
       </div>
       <AddTaskButtton />
     </Container>

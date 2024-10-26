@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { formatToMonthDay } from "@/utils/convertDate";
+import { formatToHyphenDate, formatToMonthDay } from "@/utils/convertDate";
 
 export default function TasksDate() {
   const searchParams = useSearchParams();
@@ -18,7 +18,7 @@ export default function TasksDate() {
   const [selectedDate, setSelectedDate] = useState(initialDate);
 
   useEffect(() => {
-    const formattedDate = selectedDate.format("YYYY-MM-DD");
+    const formattedDate = formatToHyphenDate(selectedDate);
     router.push(`?date=${formattedDate}`);
   }, [selectedDate, router]);
 
@@ -47,7 +47,7 @@ export default function TasksDate() {
             width={20}
             height={20}
             src="/images/arrow_button.png"
-            alt="다음 날짜 선택"
+            alt="이전 날짜 선택"
           />
         </button>
       </div>

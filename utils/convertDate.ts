@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/ko";
 
-export function formatToHyphenDate(date: Date) {
+export function formatToHyphenDate(date: Date | Dayjs) {
   return dayjs(date).format("YYYY-MM-DD");
 }
 
@@ -15,6 +15,13 @@ export function formatToKorDate(date: Date) {
 
 export function formatToMonthDay(date: Date | Dayjs) {
   return dayjs(date).locale("ko").format("MM월 DD일 (dd)");
+}
+
+export function formatKorStartTime(date: Date | Dayjs) {
+  return dayjs(date)
+    .format("A H:MM")
+    .replace("AM", "오전")
+    .replace("PM", "오후");
 }
 
 export function convertDate(getTime: Date) {
