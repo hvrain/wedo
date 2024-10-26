@@ -9,10 +9,14 @@ import Logo from "@/public/images/logo.png";
 export default function UnAuthHeader() {
   return (
     <>
-      <Image width={65} height={32} src={Logo} alt="로고" />
-      <Link className="flex grow justify-end" href="/login">
-        <Button className="bg-transparent">로그인</Button>
+      <Link href="/">
+        <Image width={65} height={32} src={Logo} alt="로고" />
       </Link>
+      <Button className="bg-transparent" asChild>
+        <Link className="flex justify-end" href="/login">
+          로그인
+        </Link>
+      </Button>
     </>
   );
 }

@@ -50,7 +50,7 @@ export default function UserDropDown({
           </DropdownMenuItem>
           <DropdownMenuItem className="p-0">
             <Link
-              href="/team/join"
+              href="/jointeam"
               className="inline-block w-full py-3 text-center text-md duration-300 hover:bg-dropDown-default pc:text-lg"
             >
               팀 참여

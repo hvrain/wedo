@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/tabindex-no-positive */
+
 "use client";
 
 import { useFormState } from "react-dom";
@@ -54,7 +56,7 @@ export default function SignUpForm() {
       password: "",
       passwordConfirmation: "",
     },
-    mode: "onBlur",
+    mode: "onChange",
   });
   if (state.status === "SUCCESS") router.push("/");
 
@@ -63,6 +65,8 @@ export default function SignUpForm() {
       <form action={formAction} className="flex w-full flex-col">
         <div className="mt-6 flex flex-col gap-6 tab:mt-[52px] pc:mt-20">
           <FormProviderField
+            autoFocus
+            tabIndex={1}
             label="이메일"
             name="email"
             type="email"
@@ -70,6 +74,7 @@ export default function SignUpForm() {
             control={form.control}
           />
           <FormProviderField
+            tabIndex={2}
             label="닉네임"
             name="nickname"
             type="text"
@@ -77,6 +82,7 @@ export default function SignUpForm() {
             control={form.control}
           />
           <FormProviderField
+            tabIndex={3}
             label="비밀번호"
             name="password"
             type="password"
@@ -85,6 +91,7 @@ export default function SignUpForm() {
             control={form.control}
           />
           <FormProviderField
+            tabIndex={4}
             label="비밀번호 확인"
             name="passwordConfirmation"
             type="password"
@@ -97,6 +104,7 @@ export default function SignUpForm() {
           <p className="md-medium mt-4 text-danger">{state.message}</p>
         )}
         <Button
+          tabIndex={5}
           className="mt-10"
           disabled={!form.formState.isValid}
           type="submit"
@@ -107,7 +115,7 @@ export default function SignUpForm() {
       <div className="mt-4 space-x-2">
         <span>이미 회원이신가요?</span>
         <Link
-          href="/signup"
+          href="/login"
           className="self-end text-link-light underline underline-offset-1"
         >
           로그인하러 가기
