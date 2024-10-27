@@ -15,7 +15,7 @@ export default function TodoReportChartSide({
 }: TodoReportChartSideProps) {
   const dataTasksCount = tasksCount ? tasksCount - doneTasksCount : 1;
   const progressPercentage = tasksCount
-    ? (doneTasksCount / tasksCount) * 100
+    ? Math.ceil((doneTasksCount / tasksCount) * 100)
     : 0;
 
   const chartData = {

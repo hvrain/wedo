@@ -22,7 +22,7 @@ function MemberDetailButton({ member }: CardProps) {
   return (
     <button>
       <Modal
-        trigger={<Kebab className="shrink-0" width="16" height="16" />}
+        trigger={<Kebab className="shrink-0" width="24" height="24" />}
         type="modal"
         footer={
           <Button className="flex-1" onClick={handleEmailCopyButtonClick}>
@@ -62,6 +62,8 @@ export function MobileMemberCard({ member }: CardProps) {
           <Image
             width={24}
             height={24}
+            className="aspect-square rounded-full"
+            objectFit="cover"
             src={
               member.userImage
                 ? member.userImage
@@ -89,6 +91,8 @@ export function PcMemberCard({ member }: CardProps) {
         <Image
           width={32}
           height={32}
+          className="aspect-square rounded-full"
+          objectFit="cover"
           src={
             member.userImage
               ? member.userImage

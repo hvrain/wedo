@@ -36,7 +36,7 @@ export default function TeamImageInput({
           className="mb-6 inline-block cursor-pointer pc:mx-auto"
         >
           <h3 className="lg-medium text-default-light pc:hidden">팀 프로필</h3>
-          <div className="relative mx-auto mt-3 h-[64px] w-[64px] pc:h-[147px] pc:w-[147px]">
+          <div className="relative mt-3 h-[64px] w-[64px] pc:mx-auto pc:h-[147px] pc:w-[147px]">
             {previewImage ? (
               <>
                 <Image

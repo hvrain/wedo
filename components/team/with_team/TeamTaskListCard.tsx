@@ -54,7 +54,7 @@ export default function TeamTaskListCard({
           {taskList.name}
         </Link>
         <div className="flex shrink-0 items-center">
-          <div className="flex h-[25px] items-center justify-between gap-1 rounded-full bg-brand-secondary-light px-2 py-1">
+          <div className="flex h-[25px] min-w-16 items-center justify-between gap-1 rounded-full bg-brand-secondary-light px-2 py-1">
             {isCompletedTaskList ? <ProgressComplete /> : <ProgressCircle />}
             <div>{`${doneTaskCount}/${totalTaskCount}`}</div>
           </div>
@@ -63,10 +63,10 @@ export default function TeamTaskListCard({
               onEditHandler={toggleIsEditModalOpen}
               onDeleteHandler={toggleIsDelModalOpen}
             >
-              <Kebab width="16" height="16" />
+              <Kebab width="20" height="20" />
             </ActionsDropDown>
           ) : (
-            <Kebab width="16" height="16" />
+            <Kebab width="20" height="20" />
           )}
         </div>
       </div>
