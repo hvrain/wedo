@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetTeam } from "@/queries/group";
+import { GetTeamResponse } from "@/dtos/GroupDtos";
 
 import { PcMemberCard, MobileMemberCard } from "./MemberCard";
 import TeamInviteModalButton from "./TeamInviteModalButton";
@@ -8,15 +8,15 @@ import TeamInviteModalButton from "./TeamInviteModalButton";
 interface TeamMemberListProps {
   isAdmin: boolean;
   groupId: number;
+  teamData: GetTeamResponse | undefined;
 }
 
 export default function TeamMemberList({
   isAdmin,
   groupId,
+  teamData,
 }: TeamMemberListProps) {
-  const { data } = useGetTeam(groupId);
-
-  const teamMembers = data?.members || [];
+  const teamMembers = teamData?.members || [];
   const numberOfMembers = teamMembers.length;
 
   return (

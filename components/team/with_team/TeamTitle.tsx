@@ -9,26 +9,31 @@ import { Button } from "@/@common/Button";
 import Input from "@/@common/Input";
 import ActionsDropDown from "@/@common/dropdown/ActionsDropDown";
 import Modal from "@/@common/modal/Modal";
+import { GetTeamResponse } from "@/dtos/GroupDtos";
 import { useToast } from "@/hooks/useToast";
 import useToggle from "@/hooks/useToggle";
 import { revalidateLayout } from "@/lib/revalidate";
 import Sawtooth from "@/public/svg/sawtooth.svg";
 import Warning from "@/public/svg/warning.svg";
-import { useDelTeam, useEditTeam, useGetTeam } from "@/queries/group";
+import { useDelTeam, useEditTeam } from "@/queries/group";
 
 interface TeamTitleProps {
   isAdmin: boolean;
   groupId: number;
+  teamData: GetTeamResponse | undefined;
 }
 
-export default function TeamTitle({ isAdmin, groupId }: TeamTitleProps) {
+export default function TeamTitle({
+  isAdmin,
+  groupId,
+  teamData,
+}: TeamTitleProps) {
   const queryClient = useQueryClient();
 
   const [isEditModalOpen, toggleIsEditModalOpen] = useToggle(false);
   const [isDelModalOpen, toggleIsDelModalOpen] = useToggle(false);
 
-  // string | undefined로 추론되기 때문에 우선은 as string으로 처리하였으나 useGetTeam에서 에러 처리를 하게 되면 필요 없어짐
-  const { data: teamData } = useGetTeam(groupId);
+  // string | undefined로 추론되기 때문에 우선은 as string으로 처리하였으나 error처리 이후에 수정 필요
   const imageUrl = teamData?.image as string;
   const currentTeamName = teamData?.name as string;
 
