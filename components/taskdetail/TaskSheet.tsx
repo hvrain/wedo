@@ -81,9 +81,12 @@ export default function TaskSheet({
   };
 
   const handleRoute = () => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       router.back();
-    }, 500);
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
   };
 
   return (
