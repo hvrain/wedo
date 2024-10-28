@@ -1,4 +1,3 @@
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/@common/Button";
@@ -50,8 +49,6 @@ export default function DeleteCommentModal({
       type="modal"
       trigger={isOpen}
       onOpenChange={toggleIsOpen}
-      title={<VisuallyHidden.Root>댓글 삭제</VisuallyHidden.Root>}
-      description={<VisuallyHidden.Root>댓글 삭제</VisuallyHidden.Root>}
       footer={
         <>
           <Button className="flex-1" variant="outlinedSecondary">

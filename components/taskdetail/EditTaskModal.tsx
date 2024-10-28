@@ -1,6 +1,5 @@
 import { MouseEvent, ChangeEvent, useState, useEffect } from "react";
 
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/@common/Button";
@@ -108,8 +107,6 @@ export default function EditTaskModal({
       type="modal"
       trigger={isOpen}
       onOpenChange={toggleIsOpen}
-      title={<VisuallyHidden.Root />}
-      description={<VisuallyHidden.Root />}
       footer={
         <>
           <Button className="flex-1" variant="outlinedSecondary">
