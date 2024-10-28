@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
+
+import { useQueryClient } from "@tanstack/react-query";
+
 import Container from "@/components/@common/container/Container";
 import { useGetTeam } from "@/queries/group";
 
@@ -14,7 +18,15 @@ interface WithTeamProps {
 }
 
 export default function WithTeam({ isAdmin, groupId }: WithTeamProps) {
-  const { data } = useGetTeam(groupId);
+  const queryClient = useQueryClient();
+
+  const { data } = useGetTeam(groupId, "always");
+
+  // 팀 페이지에 들어올 때 마다 useEffect를 이용해 쿼리를 무효화
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["team", groupId] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupId]);
 
   return (
     <Container background="white">

@@ -30,10 +30,14 @@ export function useInviteMemberWithEmail() {
   });
 }
 
-export function useGetTeam(groupId: number) {
+export function useGetTeam(
+  groupId: number,
+  refetchOnWindowFocus: boolean | "always" = true,
+) {
   return useQuery({
     queryKey: ["team", groupId],
     queryFn: () => getTeam({ groupId }),
+    refetchOnWindowFocus,
   });
 }
 
