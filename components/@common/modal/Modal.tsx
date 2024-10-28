@@ -2,6 +2,8 @@
 
 import { ReactElement, useEffect, cloneElement, ReactNode } from "react";
 
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 import {
   Dialog,
   DialogContent,
@@ -90,13 +92,26 @@ export default function Modal({
             onInteractOutside={handleInteractOutside}
             className={contentClassName}
           >
-            {(title || description) && (
+            {title ? (
               <SheetHeader>
-                {title && <SheetTitle>{title}</SheetTitle>}
-                {description && (
+                <SheetTitle>{title}</SheetTitle>
+                {description ? (
                   <SheetDescription>{description}</SheetDescription>
+                ) : (
+                  <VisuallyHidden asChild>
+                    <SheetDescription />
+                  </VisuallyHidden>
                 )}
               </SheetHeader>
+            ) : (
+              <>
+                <VisuallyHidden asChild>
+                  <SheetTitle>제목이 없습니다</SheetTitle>
+                </VisuallyHidden>
+                <VisuallyHidden asChild>
+                  <SheetDescription>설명이 없습니다</SheetDescription>
+                </VisuallyHidden>
+              </>
             )}
             {children}
             {footer && (
@@ -111,13 +126,26 @@ export default function Modal({
             onInteractOutside={handleInteractOutside}
             className={contentClassName}
           >
-            {(title || description) && (
+            {title ? (
               <DialogHeader>
-                {title && <DialogTitle>{title}</DialogTitle>}
-                {description && (
+                <DialogTitle>{title}</DialogTitle>
+                {description ? (
                   <DialogDescription>{description}</DialogDescription>
+                ) : (
+                  <VisuallyHidden asChild>
+                    <DialogDescription />
+                  </VisuallyHidden>
                 )}
               </DialogHeader>
+            ) : (
+              <>
+                <VisuallyHidden asChild>
+                  <DialogTitle>제목이 없습니다</DialogTitle>
+                </VisuallyHidden>
+                <VisuallyHidden asChild>
+                  <DialogDescription>설명이 없습니다</DialogDescription>
+                </VisuallyHidden>
+              </>
             )}
             {children}
             {footer && (
