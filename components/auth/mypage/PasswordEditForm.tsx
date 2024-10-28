@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -58,13 +58,15 @@ export default function PasswordEditForm({
     },
     mode: "onChange",
   });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (state.status === "SUCCESS")
+    if (state.status === "SUCCESS") {
       toast({ title: "비밀번호를 변경하였습니다.", variant: "default" });
-    else if (state.status === "API_ERROR")
+      form.reset();
+    } else if (state.status === "API_ERROR")
       toast({ title: state.message, variant: "danger" });
-  }, [state]);
+  }, [state, form]);
 
   return (
     <Modal
@@ -80,7 +82,8 @@ export default function PasswordEditForm({
             label="새 비밀번호"
             name="password"
             type="password"
-            hasVisibleTrigger
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
             placeholder="새 비밀번호를 입력해주세요"
             control={form.control}
           />
@@ -89,8 +92,9 @@ export default function PasswordEditForm({
             label="새 비밀번호 확인"
             name="passwordConfirmation"
             type="password"
-            hasVisibleTrigger
-            placeholder="새 비밀번호를 다시 한번 입력해주세요"
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            placeholder="다시 한번 입력해주세요"
             control={form.control}
           />
           <div className="flex w-full gap-2">

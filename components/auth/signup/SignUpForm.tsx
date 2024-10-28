@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { useFormState } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -58,6 +59,7 @@ export default function SignUpForm() {
     },
     mode: "onChange",
   });
+  const [isVisible, setIsVisible] = useState(false);
   if (state.status === "SUCCESS") router.push("/");
 
   return (
@@ -87,7 +89,8 @@ export default function SignUpForm() {
             name="password"
             type="password"
             placeholder="비밀번호를 입력해주세요"
-            hasVisibleTrigger
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
             control={form.control}
           />
           <FormProviderField
@@ -96,7 +99,8 @@ export default function SignUpForm() {
             name="passwordConfirmation"
             type="password"
             placeholder="비밀번호를 다시 한번 입력해주세요"
-            hasVisibleTrigger
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
             control={form.control}
           />
         </div>

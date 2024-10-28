@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { useFormState } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -43,6 +44,7 @@ export default function LoginForm() {
     },
     mode: "onChange",
   });
+  const [isVisible, setIsVisible] = useState(false);
   if (state.status === "SUCCESS") router.push("/");
 
   return (
@@ -64,8 +66,9 @@ export default function LoginForm() {
               label="비밀번호"
               name="password"
               type="password"
+              isVisible={isVisible}
+              setIsVisible={setIsVisible}
               placeholder="비밀번호를 입력해주세요"
-              hasVisibleTrigger
               control={form.control}
             />
           </div>
