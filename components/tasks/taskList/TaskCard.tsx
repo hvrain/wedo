@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { getFrequencyType } from "@/constants/frequencyType";
 import { TasksType } from "@/dtos/TaskDtos";
@@ -12,6 +12,8 @@ interface TaskListProps {
 
 export default function TaskCard({ task }: TaskListProps) {
   const { teamid, tasklistid } = useParams();
+  const searchParams = useSearchParams();
+  const date = searchParams.get("date");
   return (
     <article className="flex w-full flex-col gap-2.5 rounded-xl bg-dropDown-default px-3.5 py-3">
       <div className="flex items-center gap-3">
@@ -31,7 +33,10 @@ export default function TaskCard({ task }: TaskListProps) {
               alt="체크박스"
             />
           )}
-          <Link href={`/${teamid}/tasks/${tasklistid}/task/${task.id}`}>
+          <Link
+            href={`/${teamid}/tasks/${tasklistid}/task/${task.id}?date=${date}`}
+            scroll={false}
+          >
             <h2 className={`text-md ${task.doneAt && "line-through"}`}>
               {task.name}
             </h2>
