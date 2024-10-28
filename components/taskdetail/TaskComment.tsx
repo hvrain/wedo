@@ -104,6 +104,7 @@ export default function TaskComment({ comment, userId }: TaskCommentProps) {
                     height={32}
                     src={comment.user.image}
                     alt={`${comment.user.nickname} 프로필`}
+                    className="rounded-full"
                   />
                 ) : (
                   <Image

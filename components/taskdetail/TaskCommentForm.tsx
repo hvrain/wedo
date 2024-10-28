@@ -43,7 +43,7 @@ export default function TaskCommentForm({ taskid }: { taskid: string }) {
         />
         <button
           disabled={!content}
-          className="mr-[12px] inline-block h-[24px] w-[24px] rounded-full bg-brand-primary-light p-1 disabled:bg-[#888888]"
+          className="mr-[12px] inline-block h-[22px] w-[24px] rounded-full bg-brand-primary-light p-1 disabled:bg-[#888888]"
         >
           <span>
             <Image
