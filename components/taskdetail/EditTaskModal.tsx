@@ -55,22 +55,22 @@ export default function EditTaskModal({
 
   const handleEditTask = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (taskData.name === "") {
+    if (taskData.name.trim() === "") {
       e.stopPropagation();
       setErrorMessage("할 일 제목을 입력해주세요.");
       return;
     }
-    if (taskData.name.length > 30) {
+    if (taskData.name.trim().length > 30) {
       e.stopPropagation();
       setErrorMessage("제목은 30자 미만으로 작성해주세요.");
       return;
     }
-    if (taskData.description === "") {
+    if (taskData.description.trim() === "") {
       e.stopPropagation();
       setErrorMessage("할 일 메모를 입력해주세요.");
       return;
     }
-    if (taskData.description.length > 255) {
+    if (taskData.description.trim().length > 255) {
       e.stopPropagation();
       setErrorMessage("255자 미만으로 작성해주세요.");
       return;
