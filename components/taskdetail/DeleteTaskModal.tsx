@@ -44,7 +44,7 @@ export default function DeleteTaskModal({
             }))();
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["taskList"] });
+          queryClient.removeQueries({ queryKey: ["taskList"] });
           router.back();
         },
       },
