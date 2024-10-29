@@ -1,28 +1,23 @@
 "use server";
 
-export async function getArticle({
-  page,
-  search,
-}: {
-  page: number;
-  search: {
-    orderBy: "recent" | "like";
-    keyword: string;
-  };
-}) {
-  const req = new URLSearchParams(search).toString();
+import { getArticle } from "@/apis/article";
+import T from "@/dtos/Article";
 
-  const res = await fetch(
-    `https://fe-project-cowokers.vercel.app/8-7/articles?page=${page}&pageSize=20&${req}`,
-  );
-  const data = await res.json();
+export async function actionGetArticle(query: T.Query) {
+  const data = await getArticle(query);
+
+  data.query = query;
 
   return data;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function searchArticle(prev: any, formData: FormData) {
-  const param = {
+export async function actionSearchArticle(
+  prev: T.Articles,
+  formData: FormData,
+) {
+  const query: T.Query = {
+    page: "1",
+    pageSize: prev.query.pageSize,
     orderBy: (() => {
       switch (formData.get("orderBy")) {
         case "최신순":
@@ -33,21 +28,13 @@ export async function searchArticle(prev: any, formData: FormData) {
 
         // no default
       }
-    })() as string,
+    })() as "recent" | "like",
     keyword: formData.get("keyword") as string,
   };
 
-  const req = new URLSearchParams(param).toString();
+  const data = await getArticle(query);
 
-  const res = await fetch(
-    `https://fe-project-cowokers.vercel.app/8-7/articles?page=1&pageSize=20&${req}`,
-  );
-
-  const data = await res.json();
-
-  data.search = {};
-  data.search.orderBy = param.orderBy;
-  data.search.keyword = param.keyword;
+  data.query = query;
 
   return data;
 }

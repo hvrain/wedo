@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, ReactElement } from "react";
 import { useFormState } from "react-dom";
 import { useInView } from "react-intersection-observer";
@@ -12,59 +11,45 @@ import { Button } from "@/components/@common/Button";
 import Input from "@/components/@common/Input";
 import CountContent from "@/components/content/Count";
 import UserProfile from "@/components/user/Profile";
+import T from "@/dtos/Article";
 import Search from "@/public/svg/search.svg";
 import Toggle from "@/public/svg/toggle.svg";
 import { formatToDotDate } from "@/utils/convertDate";
 
-import { getArticle, searchArticle } from "../action";
+import { actionGetArticle, actionSearchArticle } from "../action";
 
 export default function ArticleSection({
   Articles,
   children,
 }: {
-  Articles: {
-    list: {
-      id: number;
-      title: string;
-      image: string | null;
-      createdAt: string;
-      updatedAt: string;
-      writer: { id: number; nickname: string };
-      likeCount: number;
-    }[];
-    totalCount: number;
-  };
+  Articles: T.Articles;
   children: ReactElement;
 }) {
-  const [state, formAction] = useFormState(searchArticle, Articles);
+  const [state, formAction] = useFormState(actionSearchArticle, Articles);
   const [articles, setArticle] = useState(state);
-  const [pageNum, setPageNum] = useState(2);
   const [ref, inView] = useInView();
   const [isVisible, setIsVisible] = useState(false);
   const [orderBy, setOrderBy] = useState({
     current: "최신순",
-    option: [
-      ["recent", "최신순"],
-      ["like", "인기순"],
-    ],
+    option: ["최신순", "인기순"],
   });
 
   useEffect(() => {
     setArticle(state);
-    setPageNum(2);
   }, [state]);
 
   useEffect(() => {
-    if (inView && articles.list.length !== articles.totalCount) {
+    if (inView) {
       (async () => {
-        const test = await getArticle({ page: pageNum, ...articles.search });
+        const newArticle = await actionGetArticle({
+          ...articles.query,
+          page: (Number(articles.query.page) + 1).toString(),
+        });
 
-        setArticle((prev: any) => ({
-          list: [...prev.list, ...test.list],
-          totalCount: test.totalCount,
+        setArticle((prev) => ({
+          ...newArticle,
+          list: [...prev.list, ...newArticle.list],
         }));
-
-        setPageNum((prev) => prev + 1);
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,35 +114,35 @@ export default function ArticleSection({
             <div
               className={`absolute right-0 top-11 z-[5] flex flex-col rounded-xl border border-dropDown-border bg-dropDown-secondary${isVisible ? "" : ` ${"hidden"}`}`}
             >
-              {orderBy.option.map((option: string[]) => (
+              {orderBy.option.map((option: string) => (
                 <button
-                  key={option[0]}
+                  key={option}
                   type="submit"
                   form="boardsSearchForm"
                   className="h-10 w-24"
                   onClick={(e) => {
                     setIsVisible(false);
 
-                    if (option[1] === orderBy.current) {
+                    if (option === orderBy.current) {
                       e.preventDefault();
                       return;
                     }
 
                     setOrderBy((prev) => ({
                       ...prev,
-                      current: option[1],
+                      current: option,
                     }));
                   }}
                 >
-                  {option[1]}
+                  {option}
                 </button>
               ))}
             </div>
           </header>
 
           <ol className="grid gap-y-4 tab:gap-y-6 pc:grid-cols-2 pc:gap-x-5">
-            {articles.list.map((article: any, i: number) => (
-              <li key={article.id} ref={i % 10 === 0 ? ref : null}>
+            {articles.list.map((article: T.Article) => (
+              <li key={article.id}>
                 <Link href={`/board/${article.id}`}>
                   <article className="flex h-40 flex-col justify-between rounded-xl bg-primary-light p-4 pt-6 tab:h-44 tab:px-8 tab:pb-6">
                     <header>
@@ -190,6 +175,8 @@ export default function ArticleSection({
               </li>
             ))}
           </ol>
+
+          {articles.list.length !== articles.totalCount && <span ref={ref} />}
         </section>
       </div>
     </>
