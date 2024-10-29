@@ -1,7 +1,15 @@
 import Image from "next/image";
 
 import { Button } from "@/@common/Button";
-import Modal from "@/@common/modal/Modal";
+import {
+  Modal,
+  ModalContent,
+  ModalDescription,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+  ModalFooter,
+} from "@/components/@common/modal/NewModal";
 import { Member } from "@/dtos/GroupDtos";
 import { useToast } from "@/hooks/useToast";
 import Kebab from "@/public/svg/kebab.svg";
@@ -20,21 +28,16 @@ function MemberDetailButton({ member }: CardProps) {
   };
 
   return (
-    <button>
-      <Modal
-        trigger={<Kebab className="shrink-0" width="24" height="24" />}
-        type="modal"
-        footer={
-          <Button className="flex-1" onClick={handleEmailCopyButtonClick}>
-            이메일 복사하기
-          </Button>
-        }
-        hasCrossCloseIcon
-      >
-        <div className="flex flex-col items-center justify-center gap-6">
+    <Modal>
+      <ModalTrigger className="h-6 w-6 shrink-0">
+        <Kebab width="24" height="24" />
+      </ModalTrigger>
+      <ModalContent hasCrossCloseIcon>
+        <ModalHeader>
           <Image
             width={52}
             height={52}
+            className="mx-auto mb-6 aspect-square rounded-full object-cover"
             src={
               member.userImage
                 ? member.userImage
@@ -42,15 +45,14 @@ function MemberDetailButton({ member }: CardProps) {
             }
             alt="유저 프로필 이미지"
           />
-          <div className="flex flex-col items-center justify-center gap-2">
-            <h2 className="md-medium text-default-light">{member.userName}</h2>
-            <div className="xs-normal text-default-light">
-              {member.userEmail}
-            </div>
-          </div>
-        </div>
-      </Modal>
-    </button>
+          <ModalTitle>{member.userName}</ModalTitle>
+          <ModalDescription>{member.userEmail}</ModalDescription>
+        </ModalHeader>
+        <ModalFooter>
+          <Button onClick={handleEmailCopyButtonClick}>이메일 복사하기</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 
@@ -62,8 +64,7 @@ export function MobileMemberCard({ member }: CardProps) {
           <Image
             width={24}
             height={24}
-            className="aspect-square rounded-full"
-            objectFit="cover"
+            className="aspect-square rounded-full object-cover"
             src={
               member.userImage
                 ? member.userImage
@@ -91,8 +92,7 @@ export function PcMemberCard({ member }: CardProps) {
         <Image
           width={32}
           height={32}
-          className="aspect-square rounded-full"
-          objectFit="cover"
+          className="aspect-square rounded-full object-cover"
           src={
             member.userImage
               ? member.userImage
