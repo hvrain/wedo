@@ -1,5 +1,7 @@
 "use client";
 
+import { Dispatch, SetStateAction } from "react";
+
 import Kebab from "@/public/svg/kebab.svg";
 import {
   DropdownMenu,
@@ -9,17 +11,19 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown";
 
-import { handleDeleteArticle, handleDeleteComment } from "./action";
+import { actionDeleteArticle, actionDeleteArticleComment } from "./action";
 
 export default function PatchAndDelete({
   id,
   section,
+  setState,
 }: {
   id: {
     articleId: number;
     commentId: number | null;
   };
   section: "article" | "comment";
+  setState: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <DropdownMenu>
@@ -35,8 +39,10 @@ export default function PatchAndDelete({
         <DropdownMenuGroup className="max-w-[120px]">
           <DropdownMenuItem className="p-0">
             <button
-              type="submit"
-              onClick={() => {}}
+              type="button"
+              onClick={() => {
+                setState(true);
+              }}
               className="w-full py-3 text-center text-md transition duration-300 ease-in-out hover:bg-dropDown-default"
             >
               수정하기
@@ -46,11 +52,11 @@ export default function PatchAndDelete({
             action={() => {
               switch (section) {
                 case "article":
-                  handleDeleteArticle(id.articleId);
+                  actionDeleteArticle(id.articleId);
                   return;
 
                 case "comment":
-                  handleDeleteComment(id);
+                  actionDeleteArticleComment(id);
 
                 // no default
               }
