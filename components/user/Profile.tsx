@@ -18,7 +18,12 @@ export default function UserProfile({
         "text-default-light",
       ])}
     >
-      <figure className="relative size-8 overflow-hidden rounded-full">
+      <figure
+        className={cn(
+          "relative size-8",
+          profileImage && "overflow-hidden rounded-full",
+        )}
+      >
         <Image fill alt="프로필 이미지" src={profileImage ?? defaultProfile} />
       </figure>
       {/* 게시글 API에서 유저 프로필 정보를 안 보내줌 물어보기, 댓글 쪽은 보내줌 */}
