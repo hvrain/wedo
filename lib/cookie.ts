@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export async function getServerCookie(key: string) {
   const cookieStore = cookies();
@@ -21,5 +20,4 @@ export async function deleteToken() {
   const cookieStore = cookies();
   cookieStore.delete("accessToken");
   cookieStore.delete("refreshToken");
-  redirect("/");
 }
