@@ -3,6 +3,7 @@ import {
   ControllerRenderProps,
   FieldValues,
   UseControllerProps,
+  useFormContext,
 } from "react-hook-form";
 
 import Image from "next/image";
@@ -20,7 +21,7 @@ import {
 } from "@/ui/form";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
   isVisible?: boolean;
   setIsVisible?: Dispatch<SetStateAction<boolean>>;
 }
@@ -35,10 +36,15 @@ export function InputField<T extends FieldValues>({
   setIsVisible,
   ...field
 }: InputFieldProps & Omit<ControllerRenderProps<T>, "ref">) {
+  const { name } = field;
+  const {
+    formState: { errors },
+  } = useFormContext();
+
   return (
     <div className="space-y-2">
       <FormItem className="relative space-y-3">
-        <FormLabel className="!lg-medium">{label}</FormLabel>
+        {label && <FormLabel className="!lg-medium">{label}</FormLabel>}
         <FormControl>
           <Input
             className={cn(
@@ -48,6 +54,7 @@ export function InputField<T extends FieldValues>({
             type={!isVisible ? type : "text"}
             placeholder={placeholder}
             disabled={disabled}
+            Error={!!errors[name]}
             {...field}
           />
         </FormControl>
@@ -92,7 +99,9 @@ export default function FormProviderField<T extends FieldValues>({
   setIsVisible,
   ...props
 }: InputFieldProps & UseControllerProps<T>) {
-  const { control, name, ...otherProps } = props;
+  const { name, ...otherProps } = props;
+  const { control } = useFormContext();
+
   return (
     <FormField
       control={control}
