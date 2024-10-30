@@ -59,7 +59,6 @@ export default function LoginForm() {
               name="email"
               type="email"
               placeholder="이메일을 입력해주세요"
-              control={form.control}
             />
             <FormProviderField
               tabIndex={2}
@@ -69,7 +68,6 @@ export default function LoginForm() {
               isVisible={isVisible}
               setIsVisible={setIsVisible}
               placeholder="비밀번호를 입력해주세요"
-              control={form.control}
             />
           </div>
           <button

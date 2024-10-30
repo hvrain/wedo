@@ -51,7 +51,6 @@ export default function ProfileEditInputs({ user }: Props) {
     },
     mode: "onChange",
   });
-  const [passwordModalOpen, togglePasswordModalOpen] = useToggle(false);
   const [secessionModalOpen, toggleSecessionModalOpen] = useToggle(false);
 
   useEffect(() => {
@@ -99,14 +98,8 @@ export default function ProfileEditInputs({ user }: Props) {
                 disabled
                 control={form.control}
               />
-              <Button
-                className="absolute bottom-[6px] right-2 tab:bottom-2"
-                size="sm"
-                type="button"
-                onClick={togglePasswordModalOpen}
-              >
-                변경하기
-              </Button>
+
+              <PasswordEditForm />
             </div>
           </div>
           <Button className="mt-10" type="submit">
@@ -127,10 +120,7 @@ export default function ProfileEditInputs({ user }: Props) {
         />
         <span>회원 탈퇴하기</span>
       </button>
-      <PasswordEditForm
-        isOpen={passwordModalOpen}
-        toggleOpen={togglePasswordModalOpen}
-      />
+
       <SecessionModal
         isOpen={secessionModalOpen}
         toggleOpen={toggleSecessionModalOpen}
