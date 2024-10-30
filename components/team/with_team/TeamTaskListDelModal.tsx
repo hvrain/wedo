@@ -1,7 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/@common/Button";
-import Modal from "@/@common/modal/Modal";
+import {
+  Modal,
+  ModalContent,
+  ModalDescription,
+  ModalHeader,
+  ModalTitle,
+  ModalClose,
+} from "@/components/@common/modal/NewModal";
 import { useToast } from "@/hooks/useToast";
 import Warning from "@/public/svg/warning.svg";
 import { useDelTaskList } from "@/queries/taskLists";
@@ -22,9 +29,7 @@ export default function TeamTaskListDelModal({
   currentName,
 }: TeamTaskListDelModalProps) {
   const queryClient = useQueryClient();
-
   const { mutate: delTaskList } = useDelTaskList();
-
   const { toast } = useToast();
 
   // 삭제하기 모달 삭제하기 버튼 클릭 핸들러
@@ -50,35 +55,27 @@ export default function TeamTaskListDelModal({
   };
 
   return (
-    <Modal
-      type="modal"
-      trigger={isOpen}
-      onOpenChange={toggleIsOpen}
-      footer={
-        <>
-          <Button className="flex-1" variant="outlinedSecondary">
-            닫기
-          </Button>
-          <Button
-            className="flex-1"
-            variant="danger"
-            onClick={handleTaskListDelButtonClick}
-          >
-            삭제 하기
-          </Button>
-        </>
-      }
-    >
-      <div className="text-center">
-        <Warning width="24" height="24" className="mx-auto mb-4" />
-        <h2 className="lg-medium mb-2 text-default-light">
-          &apos;{currentName}&apos;
-          <br />할 일 목록을 정말 삭제하시겠어요?
-        </h2>
-        <p className="md-medium text-default-dark">
-          삭제 후에는 되돌릴 수 없습니다.
-        </p>
-      </div>
+    <Modal open={isOpen} onOpenChange={toggleIsOpen}>
+      <ModalContent>
+        <ModalHeader>
+          <Warning width="24" height="24" className="mx-auto mb-4" />
+          <ModalTitle>
+            <span className="leading-6">&apos;{currentName}&apos;</span>
+            <br />할 일 목록을 정말 삭제하시겠어요?
+          </ModalTitle>
+          <ModalDescription>삭제 후에는 되돌릴 수 없습니다.</ModalDescription>
+        </ModalHeader>
+        <div className="flex items-center justify-center gap-2 [&>*]:flex-1">
+          <ModalClose asChild>
+            <Button variant="outlinedSecondary">닫기</Button>
+          </ModalClose>
+          <ModalClose asChild>
+            <Button onClick={handleTaskListDelButtonClick} variant="danger">
+              삭제 하기
+            </Button>
+          </ModalClose>
+        </div>
+      </ModalContent>
     </Modal>
   );
 }
