@@ -92,17 +92,18 @@ ModalHeader.displayName = "DialogHeader";
 
 const ModalFooter = ({
   className,
+  children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <ModalPrimitive.Close className="cursor-pointer" asChild>
-    <div
-      className={cn(
-        "flex items-center justify-center gap-2 [&>*]:flex-1",
-        className,
-      )}
-      {...props}
-    />
-  </ModalPrimitive.Close>
+  <div
+    className={cn(
+      "flex items-center justify-center gap-2 [&>*]:flex-1",
+      className,
+    )}
+    {...props}
+  >
+    <ModalPrimitive.Close asChild>{children}</ModalPrimitive.Close>
+  </div>
 );
 ModalFooter.displayName = "DialogFooter";
 
