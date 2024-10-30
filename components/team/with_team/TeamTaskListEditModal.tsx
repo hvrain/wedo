@@ -1,11 +1,31 @@
-import { useState, ChangeEvent, MouseEvent } from "react";
+import { MouseEvent } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
+import z from "zod";
 
 import { Button } from "@/@common/Button";
-import Input from "@/@common/Input";
-import Modal from "@/@common/modal/Modal";
+import {
+  Modal,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalHeader,
+  ModalTitle,
+} from "@/components/@common/modal/NewModal";
+import FormProviderField from "@/components/auth/InputField";
+import { useToast } from "@/hooks/useToast";
 import { useEditTaskList } from "@/queries/taskLists";
+
+const taskListNameSchema = z.object({
+  taskListName: z
+    .string()
+    .max(30, { message: "할 일 목록의 이름은 30자 이내입니다." })
+    .trim()
+    .min(1, { message: "할 일 목록의 이름은 공백을 제외하고 1자 이상입니다." }),
+});
 
 interface TeamTaskListEditModalProps {
   isOpen: boolean;
@@ -13,6 +33,10 @@ interface TeamTaskListEditModalProps {
   groupId: number;
   taskListId: number;
   currentName: string;
+}
+
+interface UseFormInput {
+  taskListName: string;
 }
 
 export default function TeamTaskListEditModal({
@@ -23,39 +47,49 @@ export default function TeamTaskListEditModal({
   currentName,
 }: TeamTaskListEditModalProps) {
   const queryClient = useQueryClient();
-
-  const [taskListNameValue, setTaskListNameValue] = useState(currentName);
-  const [taskListNameInputErrorMessage, setTaskListNameInputErrorMessage] =
-    useState("");
-
+  const form = useForm<UseFormInput>({
+    mode: "onChange",
+    resolver: zodResolver(taskListNameSchema),
+    defaultValues: { taskListName: currentName },
+  });
+  const { toast } = useToast();
   const { mutate: editTaskList } = useEditTaskList();
 
-  // 이름 수정하기 모달 input change 핸들러
-  const handleChangeTaskListNameInput = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!taskListNameInputErrorMessage) {
-      setTaskListNameInputErrorMessage("");
-    }
+  // 모달이 열리거나 닫힐때 실행하는 함수
+  const handleOpenChange = () => {
+    toggleIsOpen();
 
-    setTaskListNameValue(e.target.value);
+    // 모달이 열릴때만 input의 value를 reset
+    if (!isOpen) {
+      form.reset({ taskListName: currentName });
+    }
   };
 
-  // 수정하기 모달 수정하기 버튼 클릭 핸들러
-  // 1. 이전과 이름이 동일한지 체크하고 error message 출력, api 요청 x
-  // 2. api 요청 후 error가 발생하면 error message를 set
-  // 3. 성공하면 팀 페이지의 task list 최신화를 위해 invalidate queries
-  const handleTaskListNameEditButtonClick = (e: MouseEvent) => {
-    if (taskListNameValue === currentName) {
-      e.stopPropagation();
-      setTaskListNameInputErrorMessage("팀 이름이 이전과 동일합니다.");
-      return;
+  // Submit Button Click 핸들러
+  // input value의 유효성 검사 이후에 문제가 있으면 모달이 닫히지 않고 api 요청을 하지 않도록 함
+  // 최초 렌더링 시에만 별도로 수동 에러를 발생 (onChange 이전)
+  const handleSubmitButtonClick = (e: MouseEvent) => {
+    if (form.watch("taskListName") === currentName) {
+      form.setError("taskListName", {
+        type: "same_name",
+        message: "할 일 목록의 이름이 이전과 동일합니다.",
+      });
     }
+    if (Object.keys(form.formState.errors).length !== 0) {
+      e.preventDefault();
+    }
+  };
 
+  // Form Submit 핸들러, 서버 에러의 경우에는 토스트를 통해서 에러 메세지를 전달
+  const handleFormSubmit = (data: UseFormInput) => {
     editTaskList(
-      { groupId, taskListId, taskListName: taskListNameValue },
+      { groupId, taskListId, taskListName: data.taskListName },
       {
         onError: (error) => {
-          e.stopPropagation();
-          setTaskListNameInputErrorMessage(error.message);
+          toast({
+            title: error.message,
+            className: "bg-inverse [&_*]:text-danger",
+          });
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["team", groupId] });
@@ -65,24 +99,36 @@ export default function TeamTaskListEditModal({
   };
 
   return (
-    <Modal
-      type="modal"
-      trigger={isOpen}
-      onOpenChange={toggleIsOpen}
-      hasCrossCloseIcon
-      title="팀 이름"
-      footer={
-        <Button className="flex-1" onClick={handleTaskListNameEditButtonClick}>
-          수정 하기
-        </Button>
-      }
-    >
-      <Input
-        placeholder="할 일 목록 이름을 작성해주세요."
-        onChange={handleChangeTaskListNameInput}
-        defaultValue={currentName}
-        value={taskListNameValue}
-      />
+    <Modal open={isOpen} onOpenChange={handleOpenChange}>
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>할 일 이름</ModalTitle>
+          <VisuallyHidden asChild>
+            <ModalDescription>할 일 이름을 수정합니다.</ModalDescription>
+          </VisuallyHidden>
+        </ModalHeader>
+        <FormProvider {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleFormSubmit)}
+            className="flex flex-col gap-6"
+          >
+            <FormProviderField
+              name="taskListName"
+              className="bg-input-default"
+              placeholder="할 일 목록 이름을 작성해주세요."
+            />
+            <ModalClose asChild>
+              <Button
+                onClick={handleSubmitButtonClick}
+                className="w-full"
+                type="submit"
+              >
+                수정 하기
+              </Button>
+            </ModalClose>
+          </form>
+        </FormProvider>
+      </ModalContent>
     </Modal>
   );
 }
