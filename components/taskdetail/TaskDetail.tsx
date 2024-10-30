@@ -63,6 +63,7 @@ export default function TaskDetail({ data, userId }: TaskDetailProps) {
                 height={32}
                 src={data.writer.image}
                 alt={`${data.writer.nickname} 프로필`}
+                className="rounded-full"
               />
             ) : (
               <Image
@@ -70,6 +71,7 @@ export default function TaskDetail({ data, userId }: TaskDetailProps) {
                 height={32}
                 src="/images/default_userImage.png"
                 alt={`${data.writer?.nickname} 프로필`}
+                className="rounded-full"
               />
             )}
             <span>{data?.writer?.nickname}</span>

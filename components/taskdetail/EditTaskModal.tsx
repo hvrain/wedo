@@ -1,6 +1,5 @@
 import { MouseEvent, ChangeEvent, useState, useEffect } from "react";
 
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/@common/Button";
@@ -55,14 +54,24 @@ export default function EditTaskModal({
 
   const handleEditTask = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (taskData.name === "") {
+    if (taskData.name.trim() === "") {
       e.stopPropagation();
       setErrorMessage("할 일 제목을 입력해주세요.");
       return;
     }
-    if (taskData.description === "") {
+    if (taskData.name.trim().length > 30) {
+      e.stopPropagation();
+      setErrorMessage("제목은 30자 미만으로 작성해주세요.");
+      return;
+    }
+    if (taskData.description.trim() === "") {
       e.stopPropagation();
       setErrorMessage("할 일 메모를 입력해주세요.");
+      return;
+    }
+    if (taskData.description.trim().length > 255) {
+      e.stopPropagation();
+      setErrorMessage("255자 미만으로 작성해주세요.");
       return;
     }
     const requestData = {
@@ -98,8 +107,6 @@ export default function EditTaskModal({
       type="modal"
       trigger={isOpen}
       onOpenChange={toggleIsOpen}
-      title={<VisuallyHidden.Root />}
-      description={<VisuallyHidden.Root />}
       footer={
         <>
           <Button className="flex-1" variant="outlinedSecondary">

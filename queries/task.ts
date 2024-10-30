@@ -44,7 +44,7 @@ export function useGetDetailTask(
   taskid: string,
 ) {
   return useQuery({
-    queryKey: ["taskList"],
+    queryKey: ["taskList", teamid, tasklistid, taskid],
     queryFn: () => getDetailTask({ teamid, tasklistid, taskid }),
   });
 }
