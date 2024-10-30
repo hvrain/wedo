@@ -1,58 +1,76 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { MouseEvent } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import z from "zod";
 
 import { Button } from "@/@common/Button";
-import Input from "@/@common/Input";
-import Modal from "@/@common/modal/Modal";
+import {
+  Modal,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+} from "@/components/@common/modal/NewModal";
+import FormProviderField from "@/components/auth/InputField";
 import { useToast } from "@/hooks/useToast";
 import {
-  useGenerateInviteToken,
   useInviteMemberWithEmail,
+  useGenerateInviteToken,
 } from "@/queries/group";
+
+const emailSchema = z.object({
+  email: z.string().email({ message: "이메일 형식이 올바르지 않습니다." }),
+});
 
 interface TeamInviteModalButtonProps {
   groupId: number;
+}
+
+interface UseFormInput {
+  email: string;
 }
 
 export default function TeamInviteModalButton({
   groupId,
 }: TeamInviteModalButtonProps) {
   const queryClient = useQueryClient();
-
-  const [userEmailValue, setUserEmailValue] = useState("");
-  const [emailInputErrorMessage, setEmailInputErrorMessage] = useState("");
-
-  const { data: inviteToken } = useGenerateInviteToken(groupId);
+  const form = useForm<UseFormInput>({
+    mode: "onChange",
+    resolver: zodResolver(emailSchema),
+    defaultValues: { email: "" },
+  });
+  const { toast } = useToast();
   const { mutate: inviteMemberWithEmail } = useInviteMemberWithEmail();
 
-  const { toast } = useToast();
-
-  // 팀 초대하기 모달의 email input change 핸들러
-  const handleUserEmailInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUserEmailValue(e.target.value);
-
-    if (emailInputErrorMessage) {
-      setEmailInputErrorMessage("");
+  // Submit Button Click 핸들러
+  // input value의 유효성 검사 이후에 문제가 있으면 모달이 닫히지 않고 api 요청을 하지 않도록 함
+  // 최초 렌더링 시에만 별도로 수동 에러를 발생 (onChange 이전)
+  const handleSubmitButtonClick = (e: MouseEvent) => {
+    if (form.watch("email") === "") {
+      form.setError("email", {
+        type: "invalid_string",
+        message: "이메일 형식이 올바르지 않습니다.",
+      });
+    }
+    if (Object.keys(form.formState.errors).length !== 0) {
+      e.preventDefault();
     }
   };
 
-  // 이메일 초대 button click 핸들러
-  // 1. 이메일 입력이 없는 경우 api 요청 x + error message
-  // 2. 이외에는 api 요청을 하고 error message를 띄움
-  // 3. 성공시에는 toast를 띄우고 팀 페이지의 팀 멤버 목록 최신화를 위해 invalidateQuery
-  const handleEmailInviteButtonClick = (e: MouseEvent) => {
-    if (!userEmailValue) {
-      e.stopPropagation();
-      setEmailInputErrorMessage("이메일을 입력해주세요.");
-    }
-
+  // Form Submit 핸들러, 서버 에러의 경우에는 토스트를 통해서 에러 메세지를 전달
+  const handleFormSubmit = (data: UseFormInput) => {
     inviteMemberWithEmail(
-      { groupId, email: userEmailValue },
+      { groupId, email: data.email },
       {
         onError: (error) => {
-          e.stopPropagation(); // error 발생시에 안닫히게 하고 싶으나 동작하지 않음 (이후에 bug fix)
-          setEmailInputErrorMessage(error.message);
+          toast({
+            title: error.message,
+            className: "bg-inverse [&_*]:text-danger",
+          });
         },
         onSuccess: () => {
           (() => toast({ title: "초대에 성공하였습니다." }))();
@@ -62,9 +80,11 @@ export default function TeamInviteModalButton({
     );
   };
 
-  // 초대 링크를 복사 button handler, 복사 후 토스트를 띄움
+  // 초대 링크 복사 버튼 핸들러
+  const { data: inviteToken } = useGenerateInviteToken(groupId);
+
   const handleInviteTokenCopyButton = () => {
-    (() => toast({ title: "초대 링크를 복사하였습니다." }))();
+    toast({ title: "초대 링크를 복사하였습니다." });
 
     navigator.clipboard.writeText(
       `${process.env.NEXT_PUBLIC_DEPLOY_URL}/jointeam?invite=${inviteToken}`,
@@ -72,43 +92,50 @@ export default function TeamInviteModalButton({
   };
 
   return (
-    <Modal
-      trigger={
-        <button className="md-medium text-brand-active">
-          + 새로운 멤버 초대하기
-        </button>
-      }
-      title="멤버 초대"
-      description={
-        <>
-          초대 받을 유저의 email을 입력합니다.
-          <br />
-          또는 그룹에 참여할 수 있는 링크를 복사합니다.
-        </>
-      }
-      type="modal"
-      hasCrossCloseIcon
-      footer={
-        <div className="flex w-full flex-col gap-2">
-          <Button className="flex-1" onClick={handleEmailInviteButtonClick}>
-            이메일로 초대하기
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={handleInviteTokenCopyButton}
-          >
-            링크 복사하기
-          </Button>
-        </div>
-      }
-    >
-      <Input
-        value={userEmailValue}
-        onChange={handleUserEmailInputChange}
-        Error={!!emailInputErrorMessage}
-        ErrorMessage={emailInputErrorMessage}
-      />
+    <Modal>
+      <ModalTrigger
+        onClick={() => form.reset()}
+        className="md-medium text-brand-active"
+      >
+        + 새로운 멤버 초대하기
+      </ModalTrigger>
+      <ModalContent hasCrossCloseIcon>
+        <ModalHeader>
+          <ModalTitle>멤버 초대</ModalTitle>
+          <ModalDescription>
+            초대 받을 유저의 email을 입력합니다.
+            <br />
+            또는 그룹에 참여할 수 있는 링크를 복사합니다.
+          </ModalDescription>
+        </ModalHeader>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(handleFormSubmit)}>
+            <FormProviderField
+              name="email"
+              type="email"
+              className="bg-input-default"
+              placeholder="초대할 유저의 이메일을 입력해주세요."
+            />
+            <div className="mt-6 flex w-full flex-col gap-2">
+              <ModalClose onClick={handleSubmitButtonClick} asChild>
+                <Button className="w-full" type="submit">
+                  이메일로 초대하기
+                </Button>
+              </ModalClose>
+              <ModalClose asChild>
+                <Button
+                  onClick={handleInviteTokenCopyButton}
+                  className="w-full"
+                  type="button"
+                  variant="outline"
+                >
+                  링크 복사하기
+                </Button>
+              </ModalClose>
+            </div>
+          </form>
+        </FormProvider>
+      </ModalContent>
     </Modal>
   );
 }
