@@ -3,19 +3,17 @@
 import { ChangeEvent, MouseEvent, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@/@common/Button";
 import Input from "@/@common/Input";
 import ActionsDropDown from "@/@common/dropdown/ActionsDropDown";
 import Modal from "@/@common/modal/Modal";
 import { GetTeamResponse } from "@/dtos/GroupDtos";
-import { useToast } from "@/hooks/useToast";
 import useToggle from "@/hooks/useToggle";
-import { revalidateLayout } from "@/lib/revalidate";
 import Sawtooth from "@/public/svg/sawtooth.svg";
-import Warning from "@/public/svg/warning.svg";
-import { useDelTeam, useEditTeam } from "@/queries/group";
+import { useEditTeam } from "@/queries/group";
+
+import TeamDelModal from "./TeamDelModal";
 
 interface TeamTitleProps {
   isAdmin: boolean;
@@ -42,10 +40,6 @@ export default function TeamTitle({
     useState("");
 
   const { mutate: editTeam } = useEditTeam();
-  const { mutate: delTeam } = useDelTeam();
-
-  const { toast } = useToast();
-  const router = useRouter();
 
   // 팀수정하기 모달의 input change 핸들러
   const handleTeamNameInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -75,20 +69,6 @@ export default function TeamTitle({
         },
         onSuccess: () =>
           queryClient.invalidateQueries({ queryKey: ["team", groupId] }),
-      },
-    );
-  };
-
-  // 팀 삭제에 성공시 toast를 띄우고 메인 페이지로 이동시킴
-  const handleTeamDelButtonClick = () => {
-    delTeam(
-      { groupId },
-      {
-        onSuccess: () => {
-          (() => toast({ title: "팀 삭제를 완료했습니다!" }))();
-          revalidateLayout();
-          router.push("/");
-        },
       },
     );
   };
@@ -128,38 +108,12 @@ export default function TeamTitle({
             />
           </Modal>
 
-          {/* 팀 삭제하기 모달 */}
-          <Modal
-            trigger={isDelModalOpen}
-            type="modal"
-            onOpenChange={toggleIsDelModalOpen}
-            footer={
-              <>
-                <Button className="flex-1" variant="outlinedSecondary">
-                  닫기
-                </Button>
-                <Button
-                  className="flex-1"
-                  variant="danger"
-                  onClick={handleTeamDelButtonClick}
-                >
-                  삭제 하기
-                </Button>
-              </>
-            }
-          >
-            <div className="text-center">
-              <Warning width="24" height="24" className="mx-auto mb-4" />
-              <h2 className="lg-medium mb-2 text-default-light">
-                &apos;{currentTeamName}&apos;
-                <br />
-                팀을 정말 삭제하시겠어요?
-              </h2>
-              <p className="md-medium text-default-dark">
-                삭제 후에는 되돌릴 수 없습니다.
-              </p>
-            </div>
-          </Modal>
+          <TeamDelModal
+            isOpen={isDelModalOpen}
+            toggleIsOpen={toggleIsDelModalOpen}
+            groupId={groupId}
+            teamName={currentTeamName}
+          />
         </>
       )}
     </div>
