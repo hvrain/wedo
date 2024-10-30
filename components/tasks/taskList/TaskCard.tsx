@@ -1,10 +1,11 @@
+import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 
 import { getFrequencyType } from "@/constants/frequencyType";
 import { TasksType } from "@/dtos/TaskDtos";
-import { formatToKorDate } from "@/utils/convertDate";
+import { formatToKorDate, formatToHyphenDate } from "@/utils/convertDate";
 
 interface TaskListProps {
   task: TasksType;
@@ -13,7 +14,7 @@ interface TaskListProps {
 export default function TaskCard({ task }: TaskListProps) {
   const { teamid, tasklistid } = useParams();
   const searchParams = useSearchParams();
-  const date = searchParams.get("date");
+  const date = searchParams.get("date") ?? formatToHyphenDate(dayjs());
   return (
     <article className="flex w-full flex-col gap-2.5 rounded-xl bg-dropDown-default px-3.5 py-3">
       <div className="flex items-center gap-3">
