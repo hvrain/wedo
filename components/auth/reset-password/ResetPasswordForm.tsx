@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -57,6 +57,8 @@ export default function ResetPasswordForm({ token }: { token: string }) {
     },
     mode: "onChange",
   });
+  const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
     if (state.status === "SUCCESS") {
       toast({ title: "비밀번호를 변경하였습니다.", variant: "default" });
@@ -74,7 +76,8 @@ export default function ResetPasswordForm({ token }: { token: string }) {
             label="새 비밀번호"
             name="password"
             type="password"
-            hasVisibleTrigger
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
             placeholder="새 비밀번호를 입력해주세요"
             control={form.control}
           />
@@ -83,7 +86,8 @@ export default function ResetPasswordForm({ token }: { token: string }) {
             label="새 비밀번호 확인"
             name="passwordConfirmation"
             type="password"
-            hasVisibleTrigger
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
             placeholder="새 비밀번호를 다시 한번 입력해주세요"
             control={form.control}
           />

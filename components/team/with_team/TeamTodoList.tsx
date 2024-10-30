@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetTeam } from "@/queries/group";
+import { GetTeamResponse } from "@/dtos/GroupDtos";
 
 import TeamTaskListAddModalButton from "./TeamTaskListAddModalButton";
 import TeamTaskListCard from "./TeamTaskListCard";
@@ -8,12 +8,15 @@ import TeamTaskListCard from "./TeamTaskListCard";
 interface TeamTodoListProps {
   isAdmin: boolean;
   groupId: number;
+  teamData: GetTeamResponse | undefined;
 }
 
-export default function TeamTodoList({ isAdmin, groupId }: TeamTodoListProps) {
-  const { data } = useGetTeam(groupId);
-
-  const taskLists = data?.taskLists || [];
+export default function TeamTodoList({
+  isAdmin,
+  groupId,
+  teamData,
+}: TeamTodoListProps) {
+  const taskLists = teamData?.taskLists || [];
   const numberOfTaskLists = taskLists.length;
 
   return (

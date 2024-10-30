@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { useGetTeam } from "@/queries/group";
+import { GetTeamResponse } from "@/dtos/GroupDtos";
 import { countTaskList } from "@/utils/countDoneTask";
 
 import TodoReportChartSide from "./TodoReportChartSide";
@@ -28,13 +28,11 @@ function TeamTodoReportBox({ title, count, imgSrc }: TeamTodoReportBoxProps) {
 }
 
 interface TeamReportProps {
-  groupId: number;
+  teamData: GetTeamResponse | undefined;
 }
 
-export default function TeamReport({ groupId }: TeamReportProps) {
-  const { data } = useGetTeam(groupId);
-
-  const taskLists = data?.taskLists || [];
+export default function TeamReport({ teamData }: TeamReportProps) {
+  const taskLists = teamData?.taskLists || [];
   const { totalDoneTasks: doneTasksCount, totalTasks: tasksCount } =
     countTaskList(taskLists);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { InputHTMLAttributes, PropsWithChildren } from "react";
+import { InputHTMLAttributes, PropsWithChildren, useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -54,6 +54,12 @@ export default function ResetPasswordEmailModal({
     mode: "onChange",
   });
 
+  useEffect(() => {
+    if (state.status === "API_ERROR") {
+      form.setError("email", { message: state.message });
+    }
+  }, [state, form]);
+
   return (
     <Modal
       type="modal"
@@ -63,12 +69,13 @@ export default function ResetPasswordEmailModal({
       description={
         <>
           <span>비밀번호를 재설정할 이메일을 입력하면,</span>
-          <span>해당 이메일로 비밀번호 재설정 링크를 보내드립니다.</span>
+          <br />
+          <span>비밀번호 재설정 메일을 보내드립니다.</span>
         </>
       }
     >
       <FormProvider {...form}>
-        <form action={formAction} className="flex flex-col gap-6">
+        <form action={formAction} className="flex flex-col">
           <FormProviderField
             autoFocus
             className="bg-input-default"
@@ -79,12 +86,9 @@ export default function ResetPasswordEmailModal({
             control={form.control}
           />
           {state.status === "SUCCESS" && (
-            <p className="md-medium mt-4 text-danger">{`${form.getValues().email}로 비밀번호 재설정 이메일이 전송되었습니다.`}</p>
+            <p className="md-medium mt-4">{`${form.getValues().email}로 비밀번호 재설정 이메일이 전송되었습니다.`}</p>
           )}
-          {state.status === "API_ERROR" && (
-            <p className="md-medium mt-4 text-danger">{state.message}</p>
-          )}
-          <div className="flex w-full gap-2">
+          <div className="mt-6 flex w-full gap-2">
             <Button
               className="flex-1"
               variant="outlinedSecondary"
