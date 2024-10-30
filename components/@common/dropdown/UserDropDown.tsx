@@ -4,6 +4,7 @@ import { PropsWithChildren } from "react";
 
 import Link from "next/link";
 
+import useToggle from "@/hooks/useToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +21,10 @@ export default function UserDropDown({
   children,
   actionSignOut,
 }: PropsWithChildren<UserDropDownProps>) {
+  const [open, toggleOpen] = useToggle(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={toggleOpen}>
       <DropdownMenuTrigger asChild>
         <button className="rounded-xl p-2 hover:bg-primary-light">
           {children}
@@ -36,6 +39,7 @@ export default function UserDropDown({
             <Link
               href="/history"
               className="inline-block w-full py-3 text-center text-md duration-300 hover:bg-dropDown-default pc:text-lg"
+              onClick={toggleOpen}
             >
               마이 히스토리
             </Link>
@@ -44,6 +48,7 @@ export default function UserDropDown({
             <Link
               href="/mypage"
               className="inline-block w-full py-3 text-center text-md duration-300 hover:bg-dropDown-default pc:text-lg"
+              onClick={toggleOpen}
             >
               계정 설정
             </Link>
@@ -52,6 +57,7 @@ export default function UserDropDown({
             <Link
               href="/jointeam"
               className="inline-block w-full py-3 text-center text-md duration-300 hover:bg-dropDown-default pc:text-lg"
+              onClick={toggleOpen}
             >
               팀 참여
             </Link>
@@ -61,7 +67,9 @@ export default function UserDropDown({
               className="w-full py-3 text-md duration-300 hover:bg-dropDown-default pc:text-lg"
               action={actionSignOut}
             >
-              <button className="w-full">로그아웃</button>
+              <button className="w-full" type="submit" onClick={toggleOpen}>
+                로그아웃
+              </button>
             </form>
           </DropdownMenuItem>
         </DropdownMenuGroup>

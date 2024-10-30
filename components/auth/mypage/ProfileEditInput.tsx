@@ -95,6 +95,7 @@ export default function ProfileEditInputs({ user }: Props) {
                 name="password"
                 type="password"
                 placeholder="비밀번호를 입력해주세요"
+                isVisible={false}
                 disabled
                 control={form.control}
               />

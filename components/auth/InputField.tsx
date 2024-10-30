@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useState } from "react";
+import { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
 import {
   ControllerRenderProps,
   FieldValues,
@@ -21,7 +21,8 @@ import {
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  hasVisibleTrigger?: boolean;
+  isVisible?: boolean;
+  setIsVisible?: Dispatch<SetStateAction<boolean>>;
 }
 
 export function InputField<T extends FieldValues>({
@@ -30,13 +31,10 @@ export function InputField<T extends FieldValues>({
   placeholder,
   disabled,
   className,
-  hasVisibleTrigger = false,
+  isVisible = true,
+  setIsVisible,
   ...field
 }: InputFieldProps & Omit<ControllerRenderProps<T>, "ref">) {
-  const [isVisible, setIsVisible] = useState(
-    !hasVisibleTrigger && type !== "password",
-  );
-
   return (
     <div className="space-y-2">
       <FormItem className="relative space-y-3">
@@ -53,7 +51,7 @@ export function InputField<T extends FieldValues>({
             {...field}
           />
         </FormControl>
-        {hasVisibleTrigger && (
+        {setIsVisible && (
           <button
             tabIndex={-1}
             type="button"
@@ -90,7 +88,8 @@ export default function FormProviderField<T extends FieldValues>({
   type,
   placeholder,
   disabled = false,
-  hasVisibleTrigger = false,
+  isVisible = true,
+  setIsVisible,
   ...props
 }: InputFieldProps & UseControllerProps<T>) {
   const { control, name, ...otherProps } = props;
@@ -105,7 +104,8 @@ export default function FormProviderField<T extends FieldValues>({
           placeholder={placeholder}
           disabled={disabled}
           className={className}
-          hasVisibleTrigger={hasVisibleTrigger}
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
           {...otherProps}
           {...rest}
         />
