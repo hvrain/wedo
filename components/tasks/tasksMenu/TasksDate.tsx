@@ -6,7 +6,10 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import Calendar from "@/components/calendar/Calendar";
 import { formatToHyphenDate, formatToMonthDay } from "@/utils/convertDate";
+
+import DateIcon from "./DateIcon";
 
 export default function TasksDate() {
   const searchParams = useSearchParams();
@@ -28,7 +31,9 @@ export default function TasksDate() {
   const handleDateDecrease = () => {
     setSelectedDate((prevDate) => prevDate.subtract(1, "day"));
   };
-
+  const handleChangeDate = (e: Date | null) => {
+    setSelectedDate(dayjs(e));
+  };
   return (
     <div className="mb-6 flex items-center gap-3">
       <h3>{formatToMonthDay(selectedDate)}</h3>
@@ -51,14 +56,12 @@ export default function TasksDate() {
           />
         </button>
       </div>
-      <button onClick={handleDateIncrease}>
-        <Image
-          width={24}
-          height={24}
-          src="/images/calendar_button.png"
-          alt="날짜 선택"
-        />
-      </button>
+      <Calendar
+        className="dateIcon"
+        selected={new Date(selectedDate.valueOf())}
+        onChangeDate={handleChangeDate}
+        customInput={<DateIcon />}
+      />
     </div>
   );
 }
