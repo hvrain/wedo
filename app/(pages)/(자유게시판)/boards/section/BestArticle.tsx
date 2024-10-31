@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import T from "Type/Article";
 import { cva } from "class-variance-authority";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,19 +9,21 @@ import UserProfile from "@/components/user/Profile";
 import { cn } from "@/lib/utils";
 import { formatToDotDate } from "@/utils/convertDate";
 
+import { actionGetArticle } from "../action";
+
 export default async function BestArticleSection() {
-  const getBestArticle = await fetch(
-    "https://fe-project-cowokers.vercel.app/8-7/articles?pageSize=3&orderBy=like",
-    { next: { revalidate: 3600 } },
-  );
-  const BestArticles = await getBestArticle.json();
+  const BestArticles = await actionGetArticle({
+    page: "1",
+    pageSize: "3",
+    orderBy: "like",
+  });
 
   return (
     <section className="flex flex-col gap-y-6 tab:gap-y-10 pc:gap-y-14">
       <h2 className="lg-bold tab:xl-bold">베스트 게시글</h2>
 
       <ol className="flex tab:gap-x-4 pc:gap-x-5">
-        {BestArticles.list.map((article: any, i: any) => (
+        {BestArticles.list.map((article: T.Article, i: number) => (
           <li
             key={article.id}
             className={cn(
@@ -32,7 +34,7 @@ export default async function BestArticleSection() {
                     2: "max-pc:hidden",
                   },
                 },
-              })({ i }),
+              })({ i } as { i: 1 | 2 }),
             )}
           >
             <Link href={`/board/${article.id}`}>

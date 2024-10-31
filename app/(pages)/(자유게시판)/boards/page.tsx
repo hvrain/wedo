@@ -3,15 +3,16 @@ import Link from "next/link";
 import Container from "@/@common/container/Container";
 import { cn } from "@/lib/utils";
 
+import { actionGetArticle } from "./action";
 import ArticleSection from "./section/Article";
 import BestArticleSection from "./section/BestArticle";
 
 export default async function Boards() {
-  const articles = await (
-    await fetch(
-      "https://fe-project-cowokers.vercel.app/8-7/articles?page=1&pageSize=20&orderBy=recent",
-    )
-  ).json();
+  const defaultArticles = await actionGetArticle({
+    page: "1",
+    pageSize: "10",
+    orderBy: "recent",
+  });
 
   return (
     <Container
@@ -20,7 +21,7 @@ export default async function Boards() {
     >
       <h1 className="2lg-bold tab:2xl-bold">자유게시판</h1>
 
-      <ArticleSection Articles={articles}>
+      <ArticleSection Articles={defaultArticles}>
         <BestArticleSection />
       </ArticleSection>
 
