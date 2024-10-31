@@ -1,7 +1,7 @@
 export interface AddTaskRequest {
   name: string;
   description: string;
-  startDate: string | Date;
+  startDate: Date | null | string;
   frequencyType: string;
   monthDay?: number;
   weekDays?: number[];
