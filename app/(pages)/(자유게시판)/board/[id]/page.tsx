@@ -63,7 +63,11 @@ export default async function Board({ params }: { params: { id: number } }) {
           <div className="flex gap-x-4">
             <CountContent content="comment" count={article.commentCount} />
 
-            <CountContent content="like" count={article.likeCount} />
+            <CountContent
+              content="like"
+              count={article.likeCount}
+              Detail={{ articleId: article.id, isLike: article.isLiked }}
+            />
           </div>
         </footer>
       </PatchArticle>
