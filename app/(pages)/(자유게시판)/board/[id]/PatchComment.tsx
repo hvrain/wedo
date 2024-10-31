@@ -2,10 +2,11 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 
+import T from "Type/Article";
+
 import { Button } from "@/@common/Button";
 import Textarea from "@/components/@common/Textarea";
 import UserProfile from "@/components/user/Profile";
-import T from "@/dtos/Article";
 import { formatToDotDate } from "@/utils/convertDate";
 
 import PatchAndDelete from "./PatchAndDelete";

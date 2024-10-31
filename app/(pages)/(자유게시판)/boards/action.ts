@@ -1,7 +1,8 @@
 "use server";
 
+import T from "Type/Article";
+
 import { getArticle } from "@/apis/article";
-import T from "@/dtos/Article";
 
 export async function actionGetArticle(query: T.Query) {
   const data = await getArticle(query);

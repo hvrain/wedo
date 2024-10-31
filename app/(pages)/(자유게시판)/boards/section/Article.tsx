@@ -4,6 +4,7 @@ import { useState, useEffect, ReactElement } from "react";
 import { useFormState } from "react-dom";
 import { useInView } from "react-intersection-observer";
 
+import T from "Type/Article";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +12,6 @@ import { Button } from "@/components/@common/Button";
 import Input from "@/components/@common/Input";
 import CountContent from "@/components/content/Count";
 import UserProfile from "@/components/user/Profile";
-import T from "@/dtos/Article";
 import Search from "@/public/svg/search.svg";
 import Toggle from "@/public/svg/toggle.svg";
 import { formatToDotDate } from "@/utils/convertDate";

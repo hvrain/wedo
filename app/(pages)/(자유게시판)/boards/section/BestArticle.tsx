@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import T from "Type/Article";
 import { cva } from "class-variance-authority";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,7 +23,7 @@ export default async function BestArticleSection() {
       <h2 className="lg-bold tab:xl-bold">베스트 게시글</h2>
 
       <ol className="flex tab:gap-x-4 pc:gap-x-5">
-        {BestArticles.list.map((article: any, i: any) => (
+        {BestArticles.list.map((article: T.Article, i: number) => (
           <li
             key={article.id}
             className={cn(
@@ -34,7 +34,7 @@ export default async function BestArticleSection() {
                     2: "max-pc:hidden",
                   },
                 },
-              })({ i }),
+              })({ i } as { i: 1 | 2 }),
             )}
           >
             <Link href={`/board/${article.id}`}>

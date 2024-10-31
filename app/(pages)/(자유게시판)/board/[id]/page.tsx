@@ -1,26 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
+import T from "Type/Article";
 import { revalidatePath } from "next/cache";
 
 import Container from "@/@common/container/Container";
-import { getArticleComment, postArticleComment } from "@/apis/article";
+import {
+  getArticleComment,
+  postArticleComment,
+  getArticleDetail,
+} from "@/apis/article";
 import { getUser } from "@/apis/user";
 import { Button } from "@/components/@common/Button";
 import Textarea from "@/components/@common/Textarea";
 import CountContent from "@/components/content/Count";
 import UserProfile from "@/components/user/Profile";
-import T from "@/dtos/Article";
 import { formatToDotDate } from "@/utils/convertDate";
 
 import PatchArticle from "./PatchArticle";
 import PatchComment from "./PatchComment";
 
 export default async function Board({ params }: { params: { id: number } }) {
-  const article = (await (
-    await fetch(
-      `https://fe-project-cowokers.vercel.app/8-7/articles/${params.id}`,
-    )
-  ).json()) as T.ArticleDetail;
+  const article = await getArticleDetail(params.id);
 
   const Comments = await getArticleComment(params.id);
 
@@ -101,7 +99,7 @@ export default async function Board({ params }: { params: { id: number } }) {
         <hr />
 
         <ol className="flex flex-col gap-y-4">
-          {Comments.list.map((comment: any) => (
+          {Comments.list.map((comment: T.Comment) => (
             <li key={comment.id}>
               <PatchComment
                 ArticleId={article.id}

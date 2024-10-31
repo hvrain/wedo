@@ -1,15 +1,20 @@
 "use server";
 
+import T from "Type/Article";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
+  getArticleDetail,
   patchArticle,
   patchArticleComment,
   deleteArticle,
   deleteArticleComment,
 } from "@/apis/article";
-import T from "@/dtos/Article";
+
+export async function actionGetArticleDetail(articleId: number) {
+  return getArticleDetail(articleId);
+}
 
 export async function actionPatchArticle(
   articleId: number,

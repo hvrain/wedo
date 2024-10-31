@@ -1,4 +1,4 @@
-declare namespace ArticleType {
+declare module "Type/Article" {
   type defaultArticle = {
     id: number;
     writer: {
@@ -57,5 +57,3 @@ declare namespace ArticleType {
     image?: string;
   };
 }
-
-export = ArticleType;

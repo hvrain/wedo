@@ -1,5 +1,6 @@
+import T from "Type/Article";
+
 import fetchExtended from "@/apis/fetchExtended";
-import T from "@/dtos/Article";
 
 async function fetchArticle<P>({
   baseUrl = "articles",

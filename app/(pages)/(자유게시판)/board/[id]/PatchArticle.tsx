@@ -2,12 +2,12 @@
 
 import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 
+import T from "Type/Article";
 import Image from "next/image";
 
 import { Button } from "@/@common/Button";
 import Input from "@/components/@common/Input";
 import Textarea from "@/components/@common/Textarea";
-import T from "@/dtos/Article";
 
 import PatchAndDelete from "./PatchAndDelete";
 import { actionPatchArticle } from "./action";
