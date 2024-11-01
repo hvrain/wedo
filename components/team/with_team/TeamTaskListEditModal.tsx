@@ -100,7 +100,7 @@ export default function TeamTaskListEditModal({
 
   return (
     <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent>
+      <ModalContent hasCrossCloseIcon>
         <ModalHeader>
           <ModalTitle>할 일 이름</ModalTitle>
           <VisuallyHidden asChild>
