@@ -1,13 +1,14 @@
 "use client";
 
-import { InputHTMLAttributes, PropsWithChildren, useEffect } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect } from "react";
+import { useFormState } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "@/@common/Button";
+import Submit from "@/@common/button/Submit";
 import Modal from "@/@common/modal/Modal";
 import { actionSendResetPasswordEmail, State } from "@/apis/action";
 
@@ -24,18 +25,6 @@ const schema = z.object({
 interface ResetPasswordEmailModalProps {
   isOpen: boolean;
   toggleOpen: () => void;
-}
-
-function Submit({
-  disabled,
-  children,
-}: PropsWithChildren<InputHTMLAttributes<HTMLInputElement>>) {
-  const { pending } = useFormStatus();
-  return (
-    <Button disabled={disabled || pending} className="flex-1" type="submit">
-      {pending ? "전송중..." : children}
-    </Button>
-  );
 }
 
 export default function ResetPasswordEmailModal({
