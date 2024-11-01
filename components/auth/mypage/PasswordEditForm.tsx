@@ -8,7 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "@/@common/Button";
-import Modal from "@/@common/modal/Modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTitle,
+  ModalTrigger,
+} from "@/@common/modal/NewModal";
 import { actionEditPassword, State } from "@/apis/action";
 import { toast } from "@/hooks/useToast";
 
@@ -40,15 +45,7 @@ const schema = z
     }
   });
 
-interface PasswordEditFormProps {
-  isOpen: boolean;
-  toggleOpen: () => void;
-}
-
-export default function PasswordEditForm({
-  isOpen,
-  toggleOpen,
-}: PasswordEditFormProps) {
+export default function PasswordEditForm() {
   const [state, formAction] = useFormState(actionEditPassword, initialState);
   const form = useForm({
     resolver: zodResolver(schema),
@@ -69,54 +66,59 @@ export default function PasswordEditForm({
   }, [state, form]);
 
   return (
-    <Modal
-      type="modal"
-      trigger={isOpen}
-      onOpenChange={toggleOpen}
-      title="비밀번호 변경하기"
-    >
-      <FormProvider {...form}>
-        <form action={formAction} className="flex flex-col gap-6">
-          <FormProviderField
-            className="bg-input-default"
-            label="새 비밀번호"
-            name="password"
-            type="password"
-            isVisible={isVisible}
-            setIsVisible={setIsVisible}
-            placeholder="새 비밀번호를 입력해주세요"
-            control={form.control}
-          />
-          <FormProviderField
-            className="bg-input-default"
-            label="새 비밀번호 확인"
-            name="passwordConfirmation"
-            type="password"
-            isVisible={isVisible}
-            setIsVisible={setIsVisible}
-            placeholder="다시 한번 입력해주세요"
-            control={form.control}
-          />
-          <div className="flex w-full gap-2">
-            <Button
-              className="flex-1"
-              variant="outlinedSecondary"
-              type="button"
-              onClick={toggleOpen}
-            >
-              닫기
-            </Button>
-            <Button
-              disabled={!form.formState.isValid}
-              className="flex-1"
-              type="submit"
-              onClick={toggleOpen}
-            >
-              변경하기
-            </Button>
-          </div>
-        </form>
-      </FormProvider>
+    <Modal>
+      <ModalTrigger asChild>
+        <Button
+          className="absolute bottom-[6px] right-2 tab:bottom-2"
+          size="sm"
+          type="button"
+        >
+          변경하기
+        </Button>
+      </ModalTrigger>
+      <ModalContent className="tab:max-w-[450px]">
+        <ModalTitle>비밀번호 변경하기</ModalTitle>
+        <FormProvider {...form}>
+          <form action={formAction} className="flex flex-col gap-6">
+            <FormProviderField
+              className="bg-input-default"
+              label="새 비밀번호"
+              name="password"
+              type="password"
+              isVisible={isVisible}
+              setIsVisible={setIsVisible}
+              placeholder="새 비밀번호를 입력해주세요"
+              control={form.control}
+            />
+            <FormProviderField
+              className="bg-input-default"
+              label="새 비밀번호 확인"
+              name="passwordConfirmation"
+              type="password"
+              isVisible={isVisible}
+              setIsVisible={setIsVisible}
+              placeholder="새 비밀번호를 다시 한번 입력해주세요"
+              control={form.control}
+            />
+            <div className="flex w-full gap-2">
+              <Button
+                className="flex-1"
+                variant="outlinedSecondary"
+                type="button"
+              >
+                닫기
+              </Button>
+              <Button
+                disabled={!form.formState.isValid}
+                className="flex-1"
+                type="submit"
+              >
+                변경하기
+              </Button>
+            </div>
+          </form>
+        </FormProvider>
+      </ModalContent>
     </Modal>
   );
 }
