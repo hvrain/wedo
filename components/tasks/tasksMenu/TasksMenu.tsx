@@ -20,7 +20,7 @@ export default function TasksMenu({ taskMenu }: TaskMenu) {
   const searchParams = useSearchParams();
   const date = searchParams.get("date") ?? formatToHyphenDate(dayjs());
   return (
-    <ul className="pc:[&::-webkit-scrollbar] mb-6 flex gap-2 overflow-x-scroll py-[5px] pc:flex-wrap [&::-webkit-scrollbar]:hidden">
+    <ul className="mb-6 flex gap-2 overflow-x-scroll py-[5px] pc:flex-wrap [&::-webkit-scrollbar]:hidden">
       {taskMenu.map((list) => (
         <li
           className={`rounded-full ${tasklistid === String(list.id) ? "bg-brand-active" : "bg-dropDown-default"}`}
