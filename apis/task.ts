@@ -19,7 +19,7 @@ export async function addTask({
   const body = {
     name: request.name,
     description: request.description,
-    startDate: new Date(request.startDate),
+    startDate: request.startDate ? new Date(request.startDate) : null,
     frequencyType: request.frequencyType,
     monthDay: request.monthDay,
     weekDays: request.weekDays,
