@@ -42,7 +42,7 @@ export default function TodoReportChartSide({
 
   return (
     <>
-      <div className="relative mx-auto h-[170px] w-[170px] tab:h-[200px] tab:w-[200px]">
+      <div className="relative mx-auto h-[120px] w-[120px] min-[450px]:h-[170px] min-[450px]:w-[170px] tab:h-[200px] tab:w-[200px]">
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
         <Doughnut data={chartData} options={chartOptions} />
