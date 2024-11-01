@@ -7,7 +7,10 @@ import { formatToKorDate } from "@/utils/convertDate";
 export default async function MyHistoryPage() {
   const { tasksDone } = await userHistory();
 
-  const deletedDateList = tasksDone.map((list: DoneTaskType) => list.doneAt);
+  const deletedDateList = tasksDone
+    .filter((list: DoneTaskType) => !list.deletedAt)
+    .map((list: DoneTaskType) => list.date)
+    .sort((a: Date, b: Date) => new Date(b).getTime() - new Date(a).getTime());
 
   const dateFilter = (list: string[], item: Date) => {
     const formatDate = formatToKorDate(item);
@@ -29,7 +32,8 @@ export default async function MyHistoryPage() {
             <h2>{date}</h2>
             {tasksDone
               .filter(
-                (data: DoneTaskType) => formatToKorDate(data.doneAt) === date,
+                (data: DoneTaskType) =>
+                  !data.deletedAt && formatToKorDate(data.date) === date,
               )
               .map((data: DoneTaskType) => (
                 <DoneTask key={data.id} task={data} />
