@@ -92,7 +92,6 @@ ModalHeader.displayName = "DialogHeader";
 
 const ModalFooter = ({
   className,
-  children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
@@ -101,9 +100,7 @@ const ModalFooter = ({
       className,
     )}
     {...props}
-  >
-    <ModalPrimitive.Close asChild>{children}</ModalPrimitive.Close>
-  </div>
+  />
 );
 ModalFooter.displayName = "DialogFooter";
 
