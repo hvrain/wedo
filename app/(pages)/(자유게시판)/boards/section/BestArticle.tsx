@@ -44,7 +44,11 @@ export default async function BestArticleSection() {
 
                   {article.image && (
                     <figure className="relative float-right size-16 overflow-hidden rounded-xl tab:size-20">
-                      <Image alt="게시글 이미지" src={article.image} fill />
+                      <Image
+                        alt="게시글 이미지"
+                        src={article.image as string}
+                        fill
+                      />
                     </figure>
                   )}
 
