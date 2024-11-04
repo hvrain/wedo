@@ -23,7 +23,7 @@ export default function TaskCard({ task }: TaskListProps) {
         scroll={false}
       >
         <div>
-          <div className="mb-[8px] flex items-center gap-3">
+          <div className="mb-[8px] flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
               {task.doneAt ? (
                 <Image

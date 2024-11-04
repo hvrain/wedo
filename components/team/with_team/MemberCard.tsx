@@ -9,6 +9,7 @@ import {
   ModalTitle,
   ModalTrigger,
   ModalFooter,
+  ModalClose,
 } from "@/components/@common/modal/NewModal";
 import { Member } from "@/dtos/GroupDtos";
 import { useToast } from "@/hooks/useToast";
@@ -49,7 +50,11 @@ function MemberDetailButton({ member }: CardProps) {
           <ModalDescription>{member.userEmail}</ModalDescription>
         </ModalHeader>
         <ModalFooter>
-          <Button onClick={handleEmailCopyButtonClick}>이메일 복사하기</Button>
+          <ModalClose asChild>
+            <Button onClick={handleEmailCopyButtonClick}>
+              이메일 복사하기
+            </Button>
+          </ModalClose>
         </ModalFooter>
       </ModalContent>
     </Modal>

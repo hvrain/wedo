@@ -8,6 +8,7 @@ import {
   ModalHeader,
   ModalTitle,
   ModalClose,
+  ModalFooter,
 } from "@/components/@common/modal/NewModal";
 import { useToast } from "@/hooks/useToast";
 import Warning from "@/public/svg/warning.svg";
@@ -65,7 +66,7 @@ export default function TeamTaskListDelModal({
           </ModalTitle>
           <ModalDescription>삭제 후에는 되돌릴 수 없습니다.</ModalDescription>
         </ModalHeader>
-        <div className="flex items-center justify-center gap-2 [&>*]:flex-1">
+        <ModalFooter>
           <ModalClose asChild>
             <Button variant="outlinedSecondary">닫기</Button>
           </ModalClose>
@@ -74,7 +75,7 @@ export default function TeamTaskListDelModal({
               삭제 하기
             </Button>
           </ModalClose>
-        </div>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

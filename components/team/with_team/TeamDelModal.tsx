@@ -6,6 +6,7 @@ import {
   ModalClose,
   ModalContent,
   ModalDescription,
+  ModalFooter,
   ModalHeader,
   ModalTitle,
 } from "@/components/@common/modal/NewModal";
@@ -64,7 +65,7 @@ export default function TeamDelModal({
           </ModalTitle>
           <ModalDescription>삭제 후에는 되돌릴 수 없습니다.</ModalDescription>
         </ModalHeader>
-        <div className="flex items-center justify-center gap-2 [&>*]:flex-1">
+        <ModalFooter>
           <ModalClose asChild>
             <Button variant="outlinedSecondary">닫기</Button>
           </ModalClose>
@@ -73,7 +74,7 @@ export default function TeamDelModal({
               삭제 하기
             </Button>
           </ModalClose>
-        </div>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
