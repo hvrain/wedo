@@ -11,6 +11,7 @@ export default async function TaskDetailSheet({
   const { teamid, tasklistid, taskid } = params;
   return (
     <TaskSheet
+      side="full"
       userId={userId}
       teamid={teamid}
       tasklistid={tasklistid}

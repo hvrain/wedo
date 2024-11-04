@@ -8,19 +8,19 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/@common/Button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/tasksheet";
 import { TaskUpdateDto } from "@/dtos/TaskDtos";
 import { useGetDetailTask, useUpdateTask } from "@/queries/task";
 
 import TaskCommentForm from "./TaskCommentForm";
 import TaskCommentList from "./TaskCommentList";
 import TaskDetail from "./TaskDetail";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "./tasksheet/tasksheet";
 
 const INITIAL_TASK_DATA: TaskUpdateDto = {
   name: "",
@@ -33,11 +33,13 @@ export default function TaskSheet({
   tasklistid,
   taskid,
   userId,
+  side,
 }: {
   teamid: string;
   tasklistid: string;
   taskid: string;
   userId: number;
+  side?: "top" | "bottom" | "left" | "right" | "full" | null | undefined;
 }) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -99,8 +101,11 @@ export default function TaskSheet({
           </SheetDescription>
         </VisuallyHidden.Root>
       </SheetHeader>
-      <SheetContent className="max-[1200px] overflow-y-auto px-4 tab:px-6 pc:px-10">
-        <div className="overflow-auto">
+      <SheetContent
+        side={side}
+        className="overflow-y-auto px-4 tab:px-6 pc:px-10"
+      >
+        <div className="m-auto max-w-[1200px] overflow-auto">
           <TaskDetail userId={userId} data={data} />
           <TaskCommentForm taskid={taskid} />
           <TaskCommentList userId={userId} taskid={taskid} />
