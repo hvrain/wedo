@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 export default function Error({
   error,
   reset,
@@ -9,10 +7,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    // Optionally log the error to an error reporting service
-  }, [error]);
-
   return (
     <main className="fixed left-1/2 top-1/2 flex h-full -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center">
       <h2 className="text-center">{error.message}</h2>
@@ -23,7 +17,7 @@ export default function Error({
           () => reset()
         }
       >
-        Try again
+        다시시도
       </button>
     </main>
   );
