@@ -41,14 +41,14 @@ export function postArticle(param: T.ArticleContent): Promise<T.Article> {
   });
 }
 
-export function getArticleDetail(articleId: number): Promise<T.ArticleDetail> {
+export function getArticleDetail(articleId: string): Promise<T.ArticleDetail> {
   return fetchArticle({
     url: `/${articleId}`,
   });
 }
 
 export function patchArticle(
-  articleId: number,
+  articleId: string,
   param: T.ArticleContent,
 ): Promise<T.ArticleDetail> {
   return fetchArticle({
@@ -58,21 +58,21 @@ export function patchArticle(
   });
 }
 
-export function deleteArticle(articleId: number): Promise<T.Delete> {
+export function deleteArticle(articleId: string): Promise<T.Delete> {
   return fetchArticle({
     url: `/${articleId}`,
     method: "DELETE",
   });
 }
 
-export function postArticleLike(articleId: number): Promise<T.ArticleDetail> {
+export function postArticleLike(articleId: string): Promise<T.ArticleDetail> {
   return fetchArticle({
     url: `/${articleId}/like`,
     method: "POST",
   });
 }
 
-export function deleteArticleLike(articleId: number): Promise<T.Delete> {
+export function deleteArticleLike(articleId: string): Promise<T.Delete> {
   return fetchArticle({
     url: `/${articleId}/like`,
     method: "DELETE",
@@ -80,7 +80,7 @@ export function deleteArticleLike(articleId: number): Promise<T.Delete> {
 }
 
 export function getArticleComment(
-  articleId: number,
+  articleId: string,
   query?: {
     cursor: number | null;
   },
@@ -91,7 +91,7 @@ export function getArticleComment(
 }
 
 export function postArticleComment(
-  articleId: number,
+  articleId: string,
   param: {
     content: string;
   },
@@ -104,7 +104,7 @@ export function postArticleComment(
 }
 
 export function patchArticleComment(
-  commentId: number,
+  commentId: string,
   param: {
     content: string;
   },
@@ -117,7 +117,7 @@ export function patchArticleComment(
   });
 }
 
-export function deleteArticleComment(commentId: number): Promise<T.Delete> {
+export function deleteArticleComment(commentId: string): Promise<T.Delete> {
   return fetchArticle({
     baseUrl: "comments",
     url: `/${commentId}`,
