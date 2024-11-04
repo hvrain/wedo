@@ -20,8 +20,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/@common/modal/Sheet";
-import useDeviceType from "@/hooks/useDeviceType";
 import useToggle from "@/hooks/useToggle";
+import useDeviceTypeStore from "@/stores/useDeviceTypeStore";
 
 interface ModalProps {
   type: "modal" | "alert";
@@ -58,7 +58,7 @@ export default function Modal({
   contentClassName,
 }: ModalProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false);
-  const [isMobile] = useDeviceType();
+  const { deviceType } = useDeviceTypeStore();
 
   // open 상태를 toggle하는 함수
   const handleOpenChange = () => {
@@ -85,7 +85,7 @@ export default function Modal({
         cloneElement(trigger, {
           onClick: handleOpenChange,
         })}
-      {isMobile ? (
+      {deviceType.isMobile ? (
         <Sheet open={isOpen} onOpenChange={handleOpenChange}>
           <SheetContent
             hasCrossCloseIcon={type === "alert" ? false : hasCrossCloseIcon}
