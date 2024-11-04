@@ -12,13 +12,13 @@ import { formatToDotDate } from "@/utils/convertDate";
 import PatchAndDelete from "./PatchAndDelete";
 import { actionPatchArticleComment } from "./action";
 
-export default function PatchArticle({
+function Comment({
   comment,
   ArticleId,
   userId,
 }: {
   comment: T.Comment;
-  ArticleId: number;
+  ArticleId: string;
   userId: number;
 }) {
   const [reWrite, setReWrite] = useState(false);
@@ -36,7 +36,7 @@ export default function PatchArticle({
     };
 
     actionPatchArticleComment(
-      { articleId: ArticleId, commentId: comment.id },
+      { articleId: ArticleId, commentId: `${comment.id}` },
       param,
     );
 
@@ -56,7 +56,7 @@ export default function PatchArticle({
           <footer className="flex justify-between">
             <div className="flex items-center gap-x-4">
               <UserProfile
-                profileImage={comment.writer.image}
+                profileImage={comment.writer.image as string | null}
                 nickname={comment.writer.nickname}
               />
 
@@ -92,7 +92,7 @@ export default function PatchArticle({
             {comment.writer.id === userId && (
               <div className="float-end">
                 <PatchAndDelete
-                  id={{ articleId: ArticleId, commentId: comment.id }}
+                  id={{ articleId: ArticleId, commentId: `${comment.id}` }}
                   section="comment"
                   setState={setReWrite}
                 />
@@ -105,7 +105,7 @@ export default function PatchArticle({
           <footer className="flex justify-between">
             <div className="flex items-center gap-x-4">
               <UserProfile
-                profileImage={comment.writer.image}
+                profileImage={comment.writer.image as string | null}
                 nickname={comment.writer.nickname}
               />
 
@@ -115,20 +115,34 @@ export default function PatchArticle({
                 {formatToDotDate(comment.createdAt)}
               </time>
             </div>
-
-            {/* api로 안 보내줌 물어보기 */}
-            {/*
-                  <section>
-                    <p>{comment.commentCount}</p>
-
-                    하트 svg 아이콘
-
-                    <p>{comment.likeCount}</p>
-                  </section>
-                  */}
           </footer>
         </>
       )}
     </article>
+  );
+}
+
+export default function CommentList({
+  comments,
+  articleId,
+  userId,
+}: {
+  comments: T.Comments;
+  articleId: string;
+  userId: number;
+}) {
+  return (
+    <ol className="flex flex-col gap-y-4">
+      {comments.list.map((comment: T.Comment) => (
+        <li key={comment.id}>
+          <Comment
+            key={comment.id}
+            ArticleId={articleId}
+            comment={comment}
+            userId={userId}
+          />
+        </li>
+      ))}
+    </ol>
   );
 }
