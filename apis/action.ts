@@ -2,8 +2,10 @@
 
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { PatchUserRequestBody } from "@/dtos/UserDtos";
+import { deleteToken } from "@/lib/cookie";
 
 import { postSignIn, postSignUp } from "./auth";
 import { uploadImage } from "./image";
@@ -20,6 +22,11 @@ export type State = {
   message?: string;
   error?: unknown;
 };
+
+export async function actionSignOut() {
+  await deleteToken();
+  redirect("/");
+}
 
 export async function actionSignUp(
   prevState: State,

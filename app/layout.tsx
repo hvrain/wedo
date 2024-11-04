@@ -2,7 +2,6 @@ import localFont from "next/font/local";
 
 import "@/styles/globals.css";
 import { Toaster } from "@/components/@common/toast/Toaster";
-import HeaderLayout from "@/components/layout/HeaderLayout";
 
 import Providers from "./providers";
 
@@ -29,7 +28,6 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} font-pretendard`}>
         <Providers>
-          <HeaderLayout />
           {children}
           <Toaster />
         </Providers>
