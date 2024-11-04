@@ -12,8 +12,10 @@ import { Button } from "@/components/@common/Button";
 import Input from "@/components/@common/Input";
 import CountContent from "@/components/content/Count";
 import UserProfile from "@/components/user/Profile";
+import { cn } from "@/lib/utils";
 import Search from "@/public/svg/search.svg";
 import Toggle from "@/public/svg/toggle.svg";
+import Warning from "@/public/svg/warning.svg";
 import { formatToDotDate } from "@/utils/convertDate";
 
 import { actionGetArticle, actionSearchArticle } from "../action";
@@ -36,6 +38,16 @@ export default function ArticleSection({
 
   useEffect(() => {
     setArticle(state);
+
+    const OrderBy = state.query.keyword
+      ? `?orderBy=${state.query.orderBy}`
+      : "";
+
+    const keyword = state.query.keyword
+      ? `?orderBy=${state.query.keyword}`
+      : "";
+
+    window.history.pushState(null, "", `${OrderBy}${keyword}`);
   }, [state]);
 
   useEffect(() => {
@@ -46,6 +58,14 @@ export default function ArticleSection({
           page: (Number(articles.query.page) + 1).toString(),
         });
 
+        sessionStorage.setItem(
+          "articles",
+          JSON.stringify({
+            ...newArticle,
+            list: [...articles.list, ...newArticle.list],
+          }),
+        );
+
         setArticle((prev) => ({
           ...newArticle,
           list: [...prev.list, ...newArticle.list],
@@ -54,6 +74,12 @@ export default function ArticleSection({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("articles")) {
+      setArticle(JSON.parse(sessionStorage.getItem("articles")!));
+    }
+  }, []);
 
   return (
     <>
@@ -112,7 +138,12 @@ export default function ArticleSection({
             </label>
 
             <div
-              className={`absolute right-0 top-11 z-[5] flex flex-col rounded-xl border border-dropDown-border bg-dropDown-secondary${isVisible ? "" : ` ${"hidden"}`}`}
+              className={cn(
+                "absolute right-0 top-11 z-[5]",
+                "flex flex-col",
+                "rounded-xl border border-dropDown-border bg-dropDown-secondary",
+                isVisible ? "" : "hidden",
+              )}
             >
               {orderBy.option.map((option: string) => (
                 <button
@@ -140,41 +171,58 @@ export default function ArticleSection({
             </div>
           </header>
 
-          <ol className="grid gap-y-4 tab:gap-y-6 pc:grid-cols-2 pc:gap-x-5">
-            {articles.list.map((article: T.Article) => (
-              <li key={article.id}>
-                <Link href={`/board/${article.id}`}>
-                  <article className="flex h-40 flex-col justify-between rounded-xl bg-primary-light p-4 pt-6 tab:h-44 tab:px-8 tab:pb-6">
-                    <header>
-                      {article.image && (
-                        <figure className="relative float-right size-16 overflow-hidden rounded-xl tab:size-20">
-                          <Image alt="게시글 이미지" src={article.image} fill />
-                        </figure>
-                      )}
-                      <h3 className="line-clamp-3">{article.title}</h3>
-                    </header>
+          {articles.list[0] ? (
+            <ol className="grid gap-y-4 tab:gap-y-6 pc:grid-cols-2 pc:gap-x-5">
+              {articles.list.map((article: T.Article) => (
+                <li key={article.id}>
+                  <Link href={`/board/${article.id}`}>
+                    <article className="flex h-40 flex-col justify-between rounded-xl bg-primary-light p-4 pt-6 tab:h-44 tab:px-8 tab:pb-6">
+                      <header>
+                        {article.image && (
+                          <figure className="relative float-right size-16 overflow-hidden rounded-xl tab:size-20">
+                            <Image
+                              alt="게시글 이미지"
+                              src={article.image as string}
+                              fill
+                            />
+                          </figure>
+                        )}
+                        <h3 className="line-clamp-3">{article.title}</h3>
+                      </header>
 
-                    <footer className="flex justify-between">
-                      <div className="flex items-center gap-x-4">
-                        <UserProfile
-                          profileImage={null}
-                          nickname={article.writer.nickname}
+                      <footer className="flex justify-between">
+                        <div className="flex items-center gap-x-4">
+                          <UserProfile
+                            profileImage={null}
+                            nickname={article.writer.nickname}
+                          />
+
+                          <hr className="h-4 w-px border-0 bg-slate-700" />
+
+                          <time className="xs-medium text-secondary-light tab:md-medium">
+                            {formatToDotDate(article.createdAt)}
+                          </time>
+                        </div>
+
+                        <CountContent
+                          content="like"
+                          count={article.likeCount}
                         />
+                      </footer>
+                    </article>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="flex flex-col items-center gap-y-4">
+              <Warning className="w-1/3 tab:w-1/4 pc:w-1/5" />
 
-                        <hr className="h-4 w-px border-0 bg-slate-700" />
-
-                        <time className="xs-medium text-secondary-light tab:md-medium">
-                          {formatToDotDate(article.createdAt)}
-                        </time>
-                      </div>
-
-                      <CountContent content="like" count={article.likeCount} />
-                    </footer>
-                  </article>
-                </Link>
-              </li>
-            ))}
-          </ol>
+              <p className="2xl-bold text-center tab:3xl-bold pc:4xl-bold">
+                검색 데이터가 존재하지 <br /> 않습니다.
+              </p>
+            </div>
+          )}
 
           {articles.list.length !== articles.totalCount && <span ref={ref} />}
         </section>
