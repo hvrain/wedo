@@ -1,7 +1,15 @@
 "use client";
 
-import { useState, useRef, ChangeEvent, MouseEvent } from "react";
+import {
+  useState,
+  useRef,
+  ChangeEvent,
+  MouseEvent,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
+import T from "Type/Article";
 import { cva } from "class-variance-authority";
 import Image from "next/image";
 
@@ -18,8 +26,16 @@ const variant = cva(["flex items-center justify-center", "size-full"], {
   },
 });
 
-export default function ImagePreviewInput() {
-  const [preview, setPreview] = useState<string | null>(null);
+export default function ImagePreviewInput({
+  defaultImg,
+  label = "이미지",
+  setState,
+}: {
+  defaultImg?: string | null;
+  label?: string;
+  setState?: Dispatch<SetStateAction<T.ArticleContent>>;
+}) {
+  const [preview, setPreview] = useState<string | null>(defaultImg || null);
 
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -27,12 +43,20 @@ export default function ImagePreviewInput() {
     const image = e.target.files?.[0];
 
     if (image) {
+      if (setState) {
+        setState((prev) => ({ ...prev, image }));
+      }
+
       setPreview(URL.createObjectURL(image));
     }
   };
 
   const handleDeleteImage = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (setState) {
+      setState((prev) => ({ ...prev, image: null }));
+    }
 
     URL.revokeObjectURL(preview!);
     fileInput.current!.value = "";
@@ -45,7 +69,7 @@ export default function ImagePreviewInput() {
       htmlFor="ImagePreviewImageInput"
       className={`md-medium flex size-fit flex-col gap-y-4 tab:lg-medium ${preview && "pointer-events-none"}`}
     >
-      이미지
+      {label}
       <input
         type="file"
         accept="image/*"
