@@ -8,7 +8,7 @@ export async function actionGetArticle(param: T.Query) {
   const query: T.Query = {
     page: param.page,
     pageSize: param.pageSize,
-    orderBy: param.orderBy === "like" ? param.orderBy : "recent",
+    orderBy: param.orderBy === "like" ? "like" : "recent",
     keyword: param.keyword || "",
   };
   const data = await getArticle(query);
@@ -25,8 +25,8 @@ export async function actionSearchArticle(
   const query: T.Query = {
     page: "1",
     pageSize: prev.query.pageSize,
-    orderBy: formData.get("orderBy") === "like" ? "like" : "recent",
-    keyword: formData.get("keyword") as string,
+    orderBy: (formData.get("orderBy") as T.OrderBy) || prev.query.orderBy,
+    keyword: (formData.get("keyword") as string) ?? prev.query.keyword,
   };
 
   const data = await getArticle(query);
