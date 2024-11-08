@@ -6,8 +6,10 @@ import T from "Type/Article";
 import Image from "next/image";
 
 import { Button } from "@/@common/Button";
+import { uploadImage } from "@/apis/image";
 import Input from "@/components/@common/Input";
 import Textarea from "@/components/@common/Textarea";
+import ImagePreviewInput from "@/components/board/ImagePreviewInput";
 
 import PatchAndDelete from "./PatchAndDelete";
 import { actionPatchArticle } from "./action";
@@ -22,9 +24,10 @@ export default function PatchArticle({
   children: ReactElement[];
 }) {
   const [reWrite, setReWrite] = useState(false);
-  const [articleValue, setArticleValue] = useState({
+  const [articleValue, setArticleValue] = useState<T.ArticleContent>({
     title: article.title,
     content: article.content,
+    image: article.image || "",
   });
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,15 +44,25 @@ export default function PatchArticle({
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const param = {
+    const param: T.ArticleContent = {
       title: articleValue.title,
       content: articleValue.content,
     };
 
-    actionPatchArticle(article.id, param);
+    const { image } = articleValue;
+
+    if (image === null) {
+      param.image = null;
+    } else if (typeof image === "object") {
+      const { url } = await uploadImage(image as File);
+      param.image = url;
+      setArticleValue((prev) => ({ ...prev, image: url }));
+    }
+
+    actionPatchArticle(`${article.id}`, param);
 
     setReWrite(false);
   };
@@ -73,13 +86,7 @@ export default function PatchArticle({
             {children}
           </div>
 
-          <div>
-            {article.image && (
-              <figure className="relative float-right size-20 overflow-hidden rounded-xl tab:size-40">
-                <Image alt="게시글 이미지" src={article.image} fill />
-              </figure>
-            )}
-
+          <div className="flex gap-4 max-tab:flex-col">
             <Textarea
               name="content"
               BoxSize="lg"
@@ -88,9 +95,15 @@ export default function PatchArticle({
               defaultValue={articleValue.content}
               onChange={handleChangeContent}
             />
+
+            <ImagePreviewInput
+              defaultImg={article.image as string | null}
+              label=""
+              setState={setArticleValue}
+            />
           </div>
 
-          <div className="absolute -bottom-8 right-0 flex gap-3">
+          <div className="absolute -bottom-10 right-0 flex gap-3">
             <Button
               type="button"
               variant="transparent"
@@ -115,7 +128,7 @@ export default function PatchArticle({
               {article.writer.id === userId && (
                 <div className="float-end">
                   <PatchAndDelete
-                    id={{ articleId: article.id, commentId: null }}
+                    id={{ articleId: `${article.id}`, commentId: null }}
                     section="article"
                     setState={setReWrite}
                   />
@@ -132,8 +145,8 @@ export default function PatchArticle({
 
           <div>
             {article.image && (
-              <figure className="relative float-right size-20 overflow-hidden rounded-xl tab:size-40">
-                <Image alt="게시글 이미지" src={article.image} fill />
+              <figure className="relative float-right size-[7.5rem] overflow-hidden rounded-xl tab:size-40">
+                <Image alt="게시글 이미지" src={article.image as string} fill />
               </figure>
             )}
 

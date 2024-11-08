@@ -1,40 +1,18 @@
-import T from "Type/Article";
-import { revalidatePath } from "next/cache";
-
 import Container from "@/@common/container/Container";
-import {
-  getArticleComment,
-  postArticleComment,
-  getArticleDetail,
-} from "@/apis/article";
+import { getArticleDetail, getArticleComment } from "@/apis/article";
 import { getUser } from "@/apis/user";
-import { Button } from "@/components/@common/Button";
-import Textarea from "@/components/@common/Textarea";
 import CountContent from "@/components/content/Count";
 import UserProfile from "@/components/user/Profile";
 import { formatToDotDate } from "@/utils/convertDate";
 
+import CommentForm from "./CommentForm";
+import CommentList from "./CommentList";
 import PatchArticle from "./PatchArticle";
-import PatchComment from "./PatchComment";
 
-export default async function Board({ params }: { params: { id: number } }) {
+export default async function Board({ params }: { params: { id: string } }) {
   const article = await getArticleDetail(params.id);
-
-  const Comments = await getArticleComment(params.id);
-
+  const comments = await getArticleComment(params.id);
   const user = await getUser();
-
-  async function addArticleComment(formData: FormData) {
-    "use server";
-
-    const req = {
-      content: formData.get("content") as string,
-    };
-
-    await postArticleComment(params.id, req);
-
-    revalidatePath(`/board/${params.id}`);
-  }
 
   return (
     <Container
@@ -71,44 +49,15 @@ export default async function Board({ params }: { params: { id: number } }) {
       </PatchArticle>
 
       <section className="flex flex-col gap-y-8 tab:gap-10">
-        <form action={addArticleComment} className="flex flex-col gap-y-4">
-          <label
-            htmlFor="boardContentTextarea"
-            className="lg-medium flex flex-col gap-y-4 text-default-light tab:xl-bold tab:gap-y-6"
-          >
-            댓글달기
-            <Textarea
-              id="boardContentTextarea"
-              name="content"
-              Padding="lg"
-              BoxSize="md"
-              placeholder="댓글을 입력해주세요."
-              required
-            />
-          </label>
-
-          <Button
-            type="submit"
-            size="sm"
-            className="w-20 self-end tab:lg-semibold tab:h-12 tab:w-48"
-          >
-            등록
-          </Button>
-        </form>
+        <CommentForm articleId={params.id} />
 
         <hr />
 
-        <ol className="flex flex-col gap-y-4">
-          {Comments.list.map((comment: T.Comment) => (
-            <li key={comment.id}>
-              <PatchComment
-                ArticleId={article.id}
-                comment={comment}
-                userId={user.id}
-              />
-            </li>
-          ))}
-        </ol>
+        <CommentList
+          comments={comments}
+          articleId={params.id}
+          userId={user.id}
+        />
       </section>
     </Container>
   );

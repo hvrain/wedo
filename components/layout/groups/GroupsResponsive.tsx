@@ -8,6 +8,8 @@ import NavigationMenuGroups from "@/layout/groups/NavigationMenuGroups";
 import SheetGroups from "@/layout/groups/SheetGroups";
 import Logo from "@/public/images/logo.png";
 
+import BoardsLink from "./boardsLink";
+
 export default async function GroupsResponsive() {
   const groups = await getUserGroups();
 
@@ -21,9 +23,7 @@ export default async function GroupsResponsive() {
       </Link>
       <div className="lg-medium hidden items-center gap-4 tab:flex">
         <NavigationMenuGroups groups={groups} />
-        <Link className="p-2 hover:bg-primary-light" href="/boards">
-          자유게시판
-        </Link>
+        <BoardsLink />
       </div>
     </nav>
   );

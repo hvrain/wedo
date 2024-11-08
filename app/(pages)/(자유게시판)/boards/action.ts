@@ -4,7 +4,13 @@ import T from "Type/Article";
 
 import { getArticle } from "@/apis/article";
 
-export async function actionGetArticle(query: T.Query) {
+export async function actionGetArticle(param: T.Query) {
+  const query: T.Query = {
+    page: param.page,
+    pageSize: param.pageSize,
+    orderBy: param.orderBy === "like" ? "like" : "recent",
+    keyword: param.keyword || "",
+  };
   const data = await getArticle(query);
 
   data.query = query;
@@ -19,18 +25,8 @@ export async function actionSearchArticle(
   const query: T.Query = {
     page: "1",
     pageSize: prev.query.pageSize,
-    orderBy: (() => {
-      switch (formData.get("orderBy")) {
-        case "최신순":
-          return "recent";
-
-        case "인기순":
-          return "like";
-
-        // no default
-      }
-    })() as "recent" | "like",
-    keyword: formData.get("keyword") as string,
+    orderBy: (formData.get("orderBy") as T.OrderBy) || prev.query.orderBy,
+    keyword: (formData.get("keyword") as string) ?? prev.query.keyword,
   };
 
   const data = await getArticle(query);

@@ -19,8 +19,8 @@ export default function PatchAndDelete({
   setState,
 }: {
   id: {
-    articleId: number;
-    commentId: number | null;
+    articleId: string;
+    commentId: string | null;
   };
   section: "article" | "comment";
   setState: Dispatch<SetStateAction<boolean>>;

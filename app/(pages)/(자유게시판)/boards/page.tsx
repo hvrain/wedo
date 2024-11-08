@@ -1,3 +1,4 @@
+import T from "Type/Article";
 import Link from "next/link";
 
 import Container from "@/@common/container/Container";
@@ -7,11 +8,16 @@ import { actionGetArticle } from "./action";
 import ArticleSection from "./section/Article";
 import BestArticleSection from "./section/BestArticle";
 
-export default async function Boards() {
+export default async function Boards({
+  searchParams: { orderBy, keyword },
+}: {
+  searchParams: T.Query;
+}) {
   const defaultArticles = await actionGetArticle({
     page: "1",
     pageSize: "10",
-    orderBy: "recent",
+    orderBy,
+    keyword,
   });
 
   return (

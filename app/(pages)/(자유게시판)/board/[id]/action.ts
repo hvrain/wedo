@@ -5,19 +5,15 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
-  getArticleDetail,
+  postArticleComment,
   patchArticle,
   patchArticleComment,
   deleteArticle,
   deleteArticleComment,
 } from "@/apis/article";
 
-export async function actionGetArticleDetail(articleId: number) {
-  return getArticleDetail(articleId);
-}
-
 export async function actionPatchArticle(
-  articleId: number,
+  articleId: string,
   param: T.ArticleContent,
 ) {
   await patchArticle(articleId, param);
@@ -27,8 +23,8 @@ export async function actionPatchArticle(
 
 export async function actionPatchArticleComment(
   id: {
-    articleId: number;
-    commentId: number;
+    articleId: string;
+    commentId: string;
   },
   param: T.ArticleContent,
 ) {
@@ -37,7 +33,7 @@ export async function actionPatchArticleComment(
   revalidatePath(`/board/${id.articleId}`);
 }
 
-export async function actionDeleteArticle(articleId: number) {
+export async function actionDeleteArticle(articleId: string) {
   await deleteArticle(articleId);
 
   revalidatePath("/", "layout");
@@ -45,10 +41,20 @@ export async function actionDeleteArticle(articleId: number) {
 }
 
 export async function actionDeleteArticleComment(id: {
-  articleId: number;
-  commentId: number | null;
+  articleId: string;
+  commentId: string | null;
 }) {
   await deleteArticleComment(id.commentId!);
 
   revalidatePath(`/board/${id.articleId}`);
+}
+
+export async function addArticleComment(articleId: string, formData: FormData) {
+  const req = {
+    content: formData.get("content") as string,
+  };
+
+  await postArticleComment(articleId, req);
+
+  revalidatePath(`/board/${articleId}`);
 }

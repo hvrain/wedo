@@ -10,13 +10,15 @@ declare module "Type/Article" {
   };
 
   type Image = {
-    image: string | null;
+    image?: string | File | null;
   };
+
+  type OrderBy = "recent" | "like";
 
   type Query = {
     page: string;
     pageSize: string;
-    orderBy: "recent" | "like";
+    orderBy: OrderBy;
     keyword?: string;
   };
 
@@ -54,6 +56,5 @@ declare module "Type/Article" {
   type ArticleContent = {
     title?: string;
     content: string;
-    image?: string;
-  };
+  } & Image;
 }
