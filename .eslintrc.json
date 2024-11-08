@@ -86,13 +86,15 @@
     "no-use-before-define": [
       "error",
       {
-        "functions": true
+        "functions": true,
+        "variables": false
       }
     ],
     "@typescript-eslint/no-use-before-define": [
       "error",
       {
-        "functions": true
+        "functions": true,
+        "variables": false
       }
     ],
     "@typescript-eslint/naming-convention": [
