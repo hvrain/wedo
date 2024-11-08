@@ -10,12 +10,12 @@ export default async function actionPatchLike(
 ) {
   switch (isLike) {
     case true:
-      await postArticleLike(articleId);
+      await postArticleLike(articleId.toString());
 
       break;
 
     case false:
-      await deleteArticleLike(articleId);
+      await deleteArticleLike(articleId.toString());
 
       break;
 
